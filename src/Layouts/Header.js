@@ -9,10 +9,7 @@ import logoDark from "../assets/images/logo-dark.png";
 import logoLight from "../assets/images/logo-light.png";
 
 //import Components
-import SearchOption from "../Components/Common/SearchOption";
-import FullScreenDropdown from "../Components/Common/FullScreenDropdown";
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
-import LightDark from "../Components/Common/LightDark";
 
 import { changeSidebarVisibility } from "../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,7 +17,7 @@ import { createSelector } from "reselect";
 
 
 // eslint-disable-next-line react/prop-types
-const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
+const Header = ({  headerClass }) => {
   const dispatch = useDispatch();
 
   const selectDashboardData = createSelector(
@@ -87,8 +84,6 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
     }
   };
 
-  const [notificationOpen, setNotificationOpen] = useState(false);
-
   return (
     <React.Fragment>
       <header id="page-topbar" className={headerClass}>
@@ -127,66 +122,11 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                   <span></span>
                 </span>
               </button>
-
-              <SearchOption />
             </div>
 
             <div className="d-flex align-items-center ">
-              <Dropdown
-                isOpen={search}
-                toggle={toogleSearch}
-                className="d-md-none topbar-head-dropdown header-item mt-3"
-              >
-                <DropdownToggle
-                  type="button"
-                  tag="button"
-                  className="btn btn-icon btn-topbar btn-ghost-secondary mt-1 rounded-circle"
-                >
-                  <i className="bx bx-search"></i>
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-lg dropdown-menu-end p-0">
-                  <Form className="p-3">
-                    <div className="form-group m-0">
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search ..."
-                          aria-label="Recipient's username"
-                        />
-                        <button className="btn btn-primary" type="submit">
-                          <i className="mdi mdi- me-2"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </Form>
-                </DropdownMenu>
-              </Dropdown>
-              FullScreenDropdown
-              <FullScreenDropdown />
-              <LightDark
-                layoutMode={layoutModeType}
-                onChangeLayoutMode={onChangeLayoutMode}
-              />
-              <Dropdown
-                isOpen={notificationOpen}
-                toggle={() => setNotificationOpen(!notificationOpen)}
-                className="d-none d-lg-inline-block mb-1"
-              >
-                <DropdownToggle
-                  type="button"
-                  tag="button"
-                  className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative"
-                >
-                  <span className="position-relative ">
-                    <i className="bx bx-bell fs-22 position-relative"></i>
-                    <span className="badge badge-danger badge-pill position-absolute badge-danger-custom top-0 start-100 translate-middle">
-                 
-                    </span>
-                  </span>
-                </DropdownToggle>
-             
-              </Dropdown>
+              
+           
               {/* ProfileDropdown */}
               <ProfileDropdown />
               {/* Notification Dropdown */}

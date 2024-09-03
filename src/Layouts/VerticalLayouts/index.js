@@ -224,7 +224,6 @@ const VerticalLayout = (props) => {
                   id="sidebarApps"
                 >
                   <ul className="nav nav-sm flex-column test">
-                    {/* subItms  */}
                     {item.subItems &&
                       (item.subItems || []).map((subItem, key) => (
                         <React.Fragment key={key}>
