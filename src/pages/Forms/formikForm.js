@@ -8,13 +8,11 @@ import { Card, CardBody, Col, Container, Row, Button, Form } from "reactstrap";
 
 import TextInput from "../../common/textInput";
 import SelectDropdown from "../../common/selectDropdown";
-import MultiSelectDropdown from "../../common/commonMultiDropdown";
-import DateSelector from "../../common/commonDatePicker";
 import RadioGroup from "../../common/commonRadioButton";
 import { showToast } from "../../slices/toast/reducer";
 import { useDispatch } from "react-redux";
-import FileUploader from "../../common/commonFileInput";
 import CheckboxGroup from "../../common/checkBoxGroup";
+import DateSelector from "../../common/commonDatePicker"
 
 const countryOptions = [
   { value: "usa", label: "USA" },
@@ -144,14 +142,7 @@ const BasicElements = () => {
                           placeholder="Select Country"
                           validation={validation}
                         />
-                        <MultiSelectDropdown
-                          label="Language known"
-                          options={languageKnown}
-                          name="langKnown"
-                          id="langKnown"
-                          placeholder="Select Language"
-                          validation={validation}
-                        />
+                      
                         <DateSelector
                           label="Select Date"
                           name="selectedDate"
@@ -174,13 +165,6 @@ const BasicElements = () => {
                           id="gender"
                           validation={validation}
                           layout="vertical"
-                        />
-                        <FileUploader
-                          label="Choose a file:"
-                          id="fileInput"
-                          name="fileInput"
-                          validation={validation}
-                          multi={false}
                         />
                         <div className="modal-footer p-0 d-flex justify-content-start">
                           <Button

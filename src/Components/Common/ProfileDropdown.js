@@ -13,12 +13,8 @@ import { useSelector } from "react-redux";
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 
 const ProfileDropdown = () => {
-  const profiledropdownData = createSelector(
-    (state) => state.Profile.user,
-    (user) => user
-  );
-  // Inside your component
-  const user = useSelector(profiledropdownData);
+
+  
 
   const [userName, setUserName] = useState("Admin");
 
@@ -37,7 +33,7 @@ const ProfileDropdown = () => {
           : "Admin"
       );
     }
-  }, [userName, user]);
+  }, [userName]);
 
   //Dropdown Toggle
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);

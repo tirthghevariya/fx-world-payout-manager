@@ -3,14 +3,11 @@ import React from "react";
 import { Button, Spinner, Form } from "reactstrap";
 import TextInput from "../../common/textInput";
 import SelectDropdown from "../../common/selectDropdown";
-import MultiSelectDropdown from "../../common/commonMultiDropdown";
-import DateSelector from "../../common/commonDatePicker";
 import RadioGroup from "../../common/commonRadioButton";
-import FileUploader from "../../common/commonFileInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CheckboxGroup from "../../common/checkBoxGroup";
-
+import DateSelector from "../../common/commonDatePicker"
 const FormBuilder = ({
   fields,
   validationSchema,
@@ -61,17 +58,6 @@ const FormBuilder = ({
                 validation={validation}
               />
             );
-          case "multiDropdown":
-            return (
-              <MultiSelectDropdown
-                key={index}
-                label={field.label}
-                options={field.options}
-                name={field.name}
-                id={field.name}
-                validation={validation}
-              />
-            );
           case "datePicker":
             return (
               <DateSelector
@@ -105,19 +91,7 @@ const FormBuilder = ({
                 validation={validation}
               />
             );
-          case "fileInput":
-            return (
-              <FileUploader
-                key={index}
-                label={field.label}
-                name={field.name}
-                id={field.name}
-                validation={validation}
-                multi={field.multi}
-                uploadUrl={field.uploadUrl}
-                uploadType={field.uploadType}
-              />
-            );
+        
 
           default:
             return null;

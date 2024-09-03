@@ -17,10 +17,7 @@ import LightDark from "../Components/Common/LightDark";
 import { changeSidebarVisibility } from "../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
-import {
-  getNotificationCount,
-  updateNotificationCount,
-} from "../slices/thunks";
+
 
 // eslint-disable-next-line react/prop-types
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
@@ -31,16 +28,11 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
     (sidebarVisibilitytype) => sidebarVisibilitytype
   );
 
-  const { filterParams, notificationCount } = useSelector(
-    (state) => state.notification
-  );
-
   useEffect(() => {
-    fetchData(filterParams);
+    fetchData();
   }, []);
 
-  const fetchData = (filterParams) => {
-    dispatch(getNotificationCount(filterParams));
+  const fetchData = () => {
   };
 
   // Inside your component
@@ -96,11 +88,6 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
   };
 
   const [notificationOpen, setNotificationOpen] = useState(false);
-
-  const updateViewAllState = {
-    ...filterParams,
-    viewAll: true,
-  };
 
   return (
     <React.Fragment>
@@ -194,70 +181,11 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                   <span className="position-relative ">
                     <i className="bx bx-bell fs-22 position-relative"></i>
                     <span className="badge badge-danger badge-pill position-absolute badge-danger-custom top-0 start-100 translate-middle">
-                      {notificationCount.data &&
-                        notificationCount.data.unreadCount}
+                 
                     </span>
                   </span>
                 </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-xl dropdown-menu-end p-0">
-                  <div className="p-3">
-                    <h6 className="mb-0">Notifications</h6>
-                  </div>
-                  <ul className="list-group list-group-flush">
-                    {notificationCount.data &&
-                      notificationCount.data.rows &&
-                      notificationCount.data.rows
-                        .slice(0, 5)
-                        .map((notification) => (
-                          <li key={notification.id} className="list-group-item">
-                            <Link
-                              to={`/${notification.redirectType}`}
-                              onClick={() => {
-                                dispatch(
-                                  updateNotificationCount(notification.id)
-                                );
-                                setNotificationOpen(!notificationOpen);
-                              }}
-                            >
-                              <div className="d-flex align-items-center">
-                                <div className="avatar-xs me-3">
-                                  <span
-                                    className={
-                                      notification.status === "read"
-                                        ? "avatar-title bg-success rounded-circle font-size-16"
-                                        : "avatar-title bg-danger rounded-circle font-size-16"
-                                    }
-                                  >
-                                    <i className="bx bx-comment-dots"></i>
-                                  </span>
-                                </div>
-                                <div className="flex-grow-1">
-                                  <h6 className="mt-0 mb-1">
-                                    {notification.message}
-                                  </h6>
-                                </div>
-                                <div className="font-size-12 text-muted">
-                                  <i className="bx bx-time-five align-middle me-1"></i>
-                                  {notification.createdAt}
-                                </div>
-                              </div>
-                            </Link>
-                          </li>
-                        ))}
-                  </ul>
-                  <div className="p-2 border-top d-grid">
-                    <Link
-                      to="/user-notification"
-                      className="btn btn-sm btn-link font-size-14 text-center"
-                      onClick={() => {
-                        setNotificationOpen(false);
-                        dispatch(getNotificationCount(updateViewAllState));
-                      }}
-                    >
-                      View all
-                    </Link>
-                  </div>
-                </DropdownMenu>
+             
               </Dropdown>
               {/* ProfileDropdown */}
               <ProfileDropdown />
