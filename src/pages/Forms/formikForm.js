@@ -2,38 +2,20 @@ import React from "react";
 import UiContent from "../../Components/Common/UiContent";
 import { useFormik } from "formik";
 import { validationSchema } from "../../Components/validations";
-//import Components
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Card, CardBody, Col, Container, Row, Button, Form } from "reactstrap";
-
 import TextInput from "../../common/textInput";
 import SelectDropdown from "../../common/selectDropdown";
 import RadioGroup from "../../common/commonRadioButton";
 import { showToast } from "../../slices/toast/reducer";
 import { useDispatch } from "react-redux";
-import CheckboxGroup from "../../common/checkBoxGroup";
-import DateSelector from "../../common/commonDatePicker"
+import { db } from "../../firebase"; // Import Firestore
+import { collection, addDoc } from "firebase/firestore"; // Import Firestore methods
 
 const countryOptions = [
   { value: "usa", label: "USA" },
   { value: "uk", label: "UK" },
   { value: "canada", label: "Canada" },
-];
-
-const languageKnown = [
-  { value: "english", label: "English" },
-  { value: "gujarati", label: "Gujarati" },
-  { value: "hindi", label: "Hindi" },
-  { value: "tamil", label: "Tamil" },
-  { value: "urdu", label: "Urdu" },
-  { value: "bhojpuri", label: "Bhojpuri" },
-];
-
-const hobbyOptions = [
-  { label: "Reading", value: "reading" },
-  { label: "Cooking", value: "cooking" },
-  { label: "Gardening", value: "gardening" },
-  { label: "Sports", value: "sports" },
 ];
 
 const genderOptions = [
@@ -55,21 +37,27 @@ const BasicElements = () => {
       password: "",
       mobile: "",
       country: "",
-      langKnown: [],
       description: "",
-      selectedDate: null,
-      hobbies: [],
       gender: "",
-      fileInput: {},
     },
     validationSchema,
-    onSubmit: () => {
-      dispatch(
-        showToast({
-          type: "success",
-          msg: "Form Submited successfully",
-        })
-      );
+    onSubmit: async (values) => {
+      try {
+        await addDoc(collection(db, "formEntries"), values); // Add form data to Firestore
+        dispatch(
+          showToast({
+            type: "success",
+            msg: "Form Submitted successfully",
+          })
+        );
+      } catch (error) {
+        dispatch(
+          showToast({
+            type: "error",
+            msg: "Error submitting form: " + error.message,
+          })
+        );
+      }
     },
   });
 
@@ -78,10 +66,11 @@ const BasicElements = () => {
     validation.handleSubmit();
     return false;
   };
+
   return (
     <React.Fragment>
       <UiContent />
-      <div className="page-content">
+      <div className="page-content  mt-4">
         <Container fluid>
           <BreadCrumb title="Basic Elements" pageTitle="Forms" />
           <Row>
@@ -141,22 +130,6 @@ const BasicElements = () => {
                           id="country"
                           placeholder="Select Country"
                           validation={validation}
-                        />
-                      
-                        <DateSelector
-                          label="Select Date"
-                          name="selectedDate"
-                          id="selectedDate"
-                          placeholder="Select Date"
-                          validation={validation}
-                        />
-                        <CheckboxGroup
-                          label="Hobbies"
-                          options={hobbyOptions}
-                          name="hobbies"
-                          id="hobbies"
-                          validation={validation}
-                          layout="vertical"
                         />
                         <RadioGroup
                           label="Gender"
