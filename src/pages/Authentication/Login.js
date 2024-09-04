@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardBody,
@@ -14,18 +14,20 @@ import {
   Alert,
   Spinner,
 } from "reactstrap";
+import { showToast } from "../../slices/toast/reducer";
 
-//redux
+// redux
 import { useSelector, useDispatch } from "react-redux";
 import ParticlesAuth from "./ParticlesAuth";
 import { Link } from "react-router-dom";
 
-// Formik validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { enableLoading } from "../../slices/auth/login/reducer";
-// thunks
-import { loginUser } from "../../slices/thunks";
+import { enableLoading, disableLoading } from "../../slices/auth/login/reducer";
+
+
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../firebase"; 
 
 import logoLight from "../../assets/images/logo-light.png";
 
@@ -39,33 +41,58 @@ const Login = (props) => {
     loading: state.Login.loading,
   }));
 
-  const [passwordShow, setPasswordShow] = useState(false);
-
-  // useEffect(() => {
-  //   const obj = JSON.parse(localStorage.getItem("authUser"));
-  //   if (obj && obj.token) {
-  //     props.router.navigate("/admin/dashboard");
-  //   }
-  // }, []);
-
   const validation = useFormik({
     enableReinitialize: true,
 
     initialValues: {
-      email: "",
-      password: "",
+      clientId: "",
+      username: "",
     },
 
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
-      password: Yup.string().required("Please Enter Your Password"),
+      clientId: Yup.string().required("Please Enter Your Client ID"),
+      username: Yup.string().required("Please Enter Your Username"),
     }),
 
-    onSubmit: (values) => {
+    onSubmit: async (values,{resetForm}) => {
       dispatch(enableLoading());
-      dispatch(loginUser(values, props.router.navigate));
+
+      try {
+        const q = query(
+          collection(db, "users"),
+          where("clientId", "==", values.clientId),
+          where("username", "==", values.username),
+          where("userType", "==", "super_admin")
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          localStorage.setItem("superAdminUser", JSON.stringify(userData));
+          props.router.navigate("/user");
+        } else {
+          dispatch(
+            showToast({
+              type: "error",
+              msg: "Invalid login credentials or you are not authorized",
+            })
+          );
+        }
+      } catch (error) {
+        dispatch(
+          showToast({
+            type: "error",
+            msg: "Error logging in: " + error.message,
+          })
+        );
+      } finally {
+        dispatch(disableLoading());
+        resetForm();
+      }
     },
   });
+
 
   document.title = process.env.REACT_APP_SITE_TITLE + " | Login";
   return (
@@ -111,91 +138,60 @@ const Login = (props) => {
                         action="#"
                       >
                         <div className="mb-3">
-                          <Label htmlFor="email" className="form-label">
-                            Email
+                          <Label htmlFor="clientId" className="form-label">
+                            Client ID
                           </Label>
                           <Input
-                            name="email"
+                            name="clientId"
                             className="form-control"
-                            placeholder="Enter email"
-                            type="email"
+                            placeholder="Enter Client ID"
+                            type="text"
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.email || ""}
+                            value={validation.values.clientId || ""}
                             invalid={
-                              validation.touched.email &&
-                              validation.errors.email
+                              validation.touched.clientId &&
+                                validation.errors.clientId
                                 ? true
                                 : false
                             }
                           />
-                          {validation.touched.email &&
-                          validation.errors.email ? (
+                          {validation.touched.clientId &&
+                            validation.errors.clientId ? (
                             <FormFeedback type="invalid">
-                              {validation.errors.email}
+                              {validation.errors.clientId}
                             </FormFeedback>
                           ) : null}
                         </div>
 
                         <div className="mb-3">
-                          {/* <div className="float-end">
-                            <Link to="/forgot-password" className="text-muted">
-                              Forgot password?
-                            </Link>
-                          </div> */}
                           <Label
                             className="form-label"
-                            htmlFor="password-input"
+                            htmlFor="username"
                           >
-                            Password
+                            Username
                           </Label>
-                          <div className="position-relative auth-pass-inputgroup mb-3">
-                            <Input
-                              name="password"
-                              value={validation.values.password || ""}
-                              type={passwordShow ? "text" : "password"}
-                              className="form-control pe-5"
-                              placeholder="Enter Password"
-                              onChange={validation.handleChange}
-                              onBlur={validation.handleBlur}
-                              invalid={
-                                validation.touched.password &&
-                                validation.errors.password
-                                  ? true
-                                  : false
-                              }
-                            />
-                            {validation.touched.password &&
-                            validation.errors.password ? (
-                              <FormFeedback type="invalid">
-                                {validation.errors.password}
-                              </FormFeedback>
-                            ) : null}
-                            <button
-                              className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
-                              type="button"
-                              id="password-addon"
-                              onClick={() => setPasswordShow(!passwordShow)}
-                            >
-                              {" "}
-                              <i className="ri-eye-fill align-middle"></i>{" "}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="form-check">
                           <Input
-                            className="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="auth-remember-check"
+                            name="username"
+                            value={validation.values.username || ""}
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter Username"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            invalid={
+                              validation.touched.username &&
+                                validation.errors.username
+                                ? true
+                                : false
+                            }
                           />
-                          <Label
-                            className="form-check-label"
-                            htmlFor="auth-remember-check"
-                          >
-                            Remember me
-                          </Label>
+                          {validation.touched.username &&
+                            validation.errors.username ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.username}
+                            </FormFeedback>
+                          ) : null}
                         </div>
 
                         <div className="mt-4">

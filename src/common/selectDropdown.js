@@ -23,8 +23,9 @@ const SelectDropdown = ({
     (option) => option && option.value === validation.values[name]
   );
   return (
-    <FormGroup>
-      <Label for={id}>{label}</Label>
+    <FormGroup className="mt-2">
+      <Label style={{ textAlign: "left", display: "block" }} // Align label to the left
+ for={id}>{label}</Label>
       <Select
         className=""
         name={name}

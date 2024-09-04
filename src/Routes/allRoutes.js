@@ -12,11 +12,21 @@ import Logout from "../pages/Authentication/Logout";
 
 //users
 import Users from "../pages/Users/users";
+import CreateUser from "../pages/CreateUser/createUser";
 
 const authProtectedRoutes = [
   //charts
+
+
+  // Widgets
+  { path: "/admin/dashboard", component: <Widgets /> },
+
+  // Forms
+  { path: "/forms-elements", component: <BasicElements /> },
+  { path: "/create-user", component: <CreateUser /> },
+
   // users
- 
+  { path: "/user", component: <Users /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
@@ -32,10 +42,6 @@ const publicRoutes = [
   // Authentication Page
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
-  { path: "/admin/dashboard", component: <Widgets /> },
-  // Forms
-  { path: "/forms-elements", component: <BasicElements /> },
-  { path: "/user", component: <Users /> },
 ];
 
 export { authProtectedRoutes, publicRoutes };

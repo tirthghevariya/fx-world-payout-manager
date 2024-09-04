@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import { Input, FormFeedback } from "reactstrap";
 
@@ -9,17 +8,21 @@ const TextInput = ({
   id,
   placeholder,
   validation,
-  textarea, // define this when if it's a textarea
+  textarea,
 }) => {
   const inputComponent = textarea ? "textarea" : "input"; // Use textarea if specified
 
   return (
-    <div className="mb-3">
-      <label htmlFor={id} className="col-lg-12">
+    <div className="mb-0">
+      <label
+        htmlFor={id}
+        className="col-form-label"
+        style={{ textAlign: "left", display: "block" }} // Align label to the left
+      >
         {label}
       </label>
       <Input
-        type={inputComponent} // Use textarea if specified
+        type={inputComponent}
         maxLength={maxLength}
         className="form-control"
         name={name}
@@ -33,7 +36,8 @@ const TextInput = ({
         onBlur={validation.handleBlur}
       />
       {validation.touched[name] && validation.errors[name] ? (
-        <FormFeedback type="invalid">{validation.errors[name]}</FormFeedback>
+        <FormFeedback style={{ textAlign: "left", display: "block" }} // Align label to the left
+  type="invalid">{validation.errors[name]}</FormFeedback>
       ) : null}
     </div>
   );

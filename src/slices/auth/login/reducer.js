@@ -21,6 +21,9 @@ const loginSlice = createSlice({
     enableLoading(state) {
       state.loading = true;
     },
+    disableLoading(state) {
+      state.loading = false;
+    },
     loginSuccess(state, action) {
       state.user = action.payload;
       state.loading = false;
@@ -32,7 +35,7 @@ const loginSlice = createSlice({
   },
 });
 
-export const { apiError, loginSuccess, logoutUserSuccess, enableLoading } =
+export const { apiError, loginSuccess, logoutUserSuccess, enableLoading, disableLoading } =
   loginSlice.actions;
 
 export default loginSlice.reducer;

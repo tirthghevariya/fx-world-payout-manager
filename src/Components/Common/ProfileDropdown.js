@@ -17,23 +17,11 @@ const ProfileDropdown = () => {
   
 
   const [userName, setUserName] = useState("Admin");
-
+console
   useEffect(() => {
-    if (sessionStorage.getItem("authUser")) {
-      const obj = JSON.parse(sessionStorage.getItem("authUser"));
-      setUserName(
-        process.env.REACT_APP_DEFAULTAUTH === "fake"
-          ? obj.username === undefined
-            ? user.first_name
-              ? user.first_name
-              : obj.data.first_name
-            : "Admin" || "Admin"
-          : process.env.REACT_APP_DEFAULTAUTH === "firebase"
-          ? obj.email && obj.email
-          : "Admin"
-      );
-    }
-  }, [userName]);
+    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+    console.log(superAdminUser)
+  }, []);
 
   //Dropdown Toggle
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
@@ -66,58 +54,20 @@ const ProfileDropdown = () => {
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
           <h6 className="dropdown-header">Welcome {userName}!</h6>
-          <DropdownItem className="p-0">
-            <Link
-              to={process.env.PUBLIC_URL + "/profile"}
-              className="dropdown-item"
-            >
-              <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-              <span className="align-middle">Profile</span>
-            </Link>
-          </DropdownItem>
+    
           <div className="dropdown-divider"></div>
+         
           <DropdownItem className="p-0">
             <Link
-              to={process.env.PUBLIC_URL + "/pages-profile"}
+              to={"/create-user"}
               className="dropdown-item"
             >
-              <i className="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i>{" "}
-              <span className="align-middle">
-                Balance : <b>$5971.67</b>
-              </span>
+              <i class="ri-user-add-fill text-muted fs-16 align-middle me-1"></i>
+              <span className="align-middle">Create User</span>
             </Link>
           </DropdownItem>
-          <DropdownItem className="p-0">
-            <Link
-              to={process.env.PUBLIC_URL + "/auth-lockscreen-basic"}
-              className="dropdown-item"
-            >
-              <i className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>{" "}
-              <span className="align-middle">Lock screen</span>
-            </Link>
-          </DropdownItem>
-          <DropdownItem className="p-0">
-            <Link
-              to={process.env.PUBLIC_URL + "/logout"}
-              className="dropdown-item"
-            >
-              <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>{" "}
-              <span className="align-middle" data-key="t-logout">
-                Logout
-              </span>
-            </Link>
-          </DropdownItem>
-          {/* <DropdownItem className="p-0">
-            <Link
-              to={process.env.PUBLIC_URL + "/logout"}
-              className="dropdown-item"
-            >
-              <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>{" "}
-              <span className="align-middle" data-key="t-logout">
-                Logout
-              </span>
-            </Link>
-          </DropdownItem> */}
+      
+         
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>
