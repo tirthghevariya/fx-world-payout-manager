@@ -1,5 +1,33 @@
 import * as Yup from "yup";
 
+
+const clientIdRegex = /^FW\d{6}$/;
+
+export const entriesSchema = Yup.object({
+  clientId: Yup.string()
+    .required("Client ID is required")
+    .matches(clientIdRegex, "Client ID must start with 'FW' followed by 6 digits"),
+
+  clientName: Yup.string()
+    .required("Client Name is required"), // This will be auto-filled but still required for submission
+
+  myWallet: Yup.number()
+    .min(0, "Wallet value must be greater than or equal to 0")
+    .required("Wallet value is required"), // Allow user to enter, or default to 0.0
+
+  trade: Yup.number()
+    .min(0, "Trade value must be greater than or equal to 0")
+    .required("Trade value is required"), // Allow user to enter, or default to 0.0
+
+  request: Yup.string()
+    .notRequired(), // No validation required, it's an optional field
+
+  // The following fields are hidden, so no need to validate:
+  status: Yup.string(),
+  notes: Yup.string(),
+  currentMonth: Yup.string(),
+});
+
 // Define validation schema for the form
 export const validationSchema = Yup.object().shape({
   fullName: Yup.string().required("Please Enter Full Name"),

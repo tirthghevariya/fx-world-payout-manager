@@ -5,11 +5,7 @@ import {
   updateUser as asyncUpdateUser,
   deleteUser as asyncDeleteUser,
   updateUserStatus as asyncUpdateUserStatus,
-  registerVsActive as asyncRegisterVsActive,
   bulkDeleteUser as asyncBulkDeleteUser,
-  last15DaysOrder as asyncLast15DaysOrder,
-  getVendorList as asyncGetVendorList,
-  topPerformingReport as asyncTopPerformingReport,
 } from "../../helpers/apis";
 import { showToast } from "../toast/reducer";
 
@@ -21,51 +17,6 @@ export const getUserList = createAsyncThunk("getUserList", async (req) => {
     return error;
   }
 });
-
-export const getTopPerformingVendor = createAsyncThunk(
-  "getTopPerformingVendor",
-  async (req) => {
-    try {
-      const response = asyncTopPerformingReport(req);
-      return response;
-    } catch (error) {
-      return error;
-    }
-  }
-);
-
-export const getVendorList = createAsyncThunk("getVendorList", async (req) => {
-  try {
-    const response = asyncGetVendorList(req);
-    return response;
-  } catch (error) {
-    return error;
-  }
-});
-
-export const registerVsActiveUser = createAsyncThunk(
-  "registerVsActiveUser",
-  async (req) => {
-    try {
-      const response = asyncRegisterVsActive(req);
-      return response;
-    } catch (error) {
-      return error;
-    }
-  }
-);
-
-export const last15DaysOrder = createAsyncThunk(
-  "last15DaysOrder",
-  async (req) => {
-    try {
-      const response = asyncLast15DaysOrder(req);
-      return response;
-    } catch (error) {
-      return error;
-    }
-  }
-);
 
 export const createUser = createAsyncThunk(
   "chat/createUser",

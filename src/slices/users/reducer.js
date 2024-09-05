@@ -4,11 +4,7 @@ import {
   getUserList,
   updateUsers,
   updateUserStatus,
-  registerVsActiveUser,
   bulkDeleteUser,
-  last15DaysOrder,
-  getVendorList,
-  getTopPerformingVendor,
 } from "./thunk";
 const moment = require("moment");
 
@@ -43,8 +39,6 @@ export const initialState = {
   },
 
   bulkDelete: {},
-  registerVsActive: [],
-  last15DaysOrderReport: [],
   userList: [],
   vendorList: [],
   topPerformingVendor: [],
@@ -70,14 +64,6 @@ const usersSlice = createSlice({
       state.userList = action.payload;
     });
 
-    builder.addCase(registerVsActiveUser.fulfilled, (state, action) => {
-      state.registerVsActive = action.payload;
-    });
-
-    builder.addCase(last15DaysOrder.fulfilled, (state, action) => {
-      state.last15DaysOrderReport = action.payload;
-    });
-
     builder.addCase(createUser.fulfilled, (state) => {
       state.insersUser = { formOpen: false, loading: false };
     });
@@ -92,12 +78,6 @@ const usersSlice = createSlice({
 
     builder.addCase(bulkDeleteUser.fulfilled, (state, action) => {
       state.bulkDelete = action.payload;
-    });
-    builder.addCase(getVendorList.fulfilled, (state, action) => {
-      state.vendorList = action.payload;
-    });
-    builder.addCase(getTopPerformingVendor.fulfilled, (state, action) => {
-      state.topPerformingVendor = action.payload;
     });
   },
 });

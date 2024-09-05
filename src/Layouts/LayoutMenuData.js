@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Navdata = () => {
+  const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+
   const history = useNavigate();
   //state data
   const [isDashboard, setIsDashboard] = useState(false);
@@ -11,10 +13,6 @@ const Navdata = () => {
   const [isTables, setIsTables] = useState(false);
   const [isCharts, setIsCharts] = useState(false);
   const [isProduct, setisProduct] = useState(false);
-  const [isSetting, setisSetting] = useState(false);
-  const [isOrder, setisOrder] = useState(false);
-  const [isReport, setisReport] = useState(false);
-  const [isCms, setisCms] = useState(false);
   const [isWallet, setIsWallet] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
   // const permissions = authUser.permissions.map((permission) =>
@@ -51,29 +49,8 @@ const Navdata = () => {
     if (iscurrentState !== "Forms") {
       setIsForms(false);
     }
-    if (iscurrentState !== "Tables") {
-      setIsTables(false);
-    }
-    if (iscurrentState !== "CMS") {
-      setIsTables(false);
-    }
-    if (iscurrentState !== "Charts") {
-      setIsCharts(false);
-    }
-    if (iscurrentState !== "Product") {
-      setisProduct(false);
-    }
-    if (iscurrentState !== "Setting") {
-      setisSetting(false);
-    }
-    if (iscurrentState !== "Report") {
-      setisReport(false);
-    }
-    if (iscurrentState !== "wallet") {
-      setIsWallet(false);
-    }
-    if (iscurrentState === "/admin/dashboard") {
-      history("/admin/dashboard");
+    if (iscurrentState === "/forms-elements") {
+      history("/forms-elements");
       document.body.classList.add("twocolumn-panel");
     }
   }, [
@@ -88,26 +65,18 @@ const Navdata = () => {
     isProduct,
     isWallet,
   ]);
+ 
+
 
   const menuItems = [
-    {
-      id: "widgets",
-      label: "Dashboard",
-      icon: "ri-honour-line",
-      link: "/admin/dashboard",
-      click: function (e) {
-        e.preventDefault();
-        setIscurrentState("Widgets");
-      },
-    },
-    {
+    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
       id: "user",
       pkey: "Users",
-      label: "Users",
+      label: "Entries",
       link: "/user",
-      icon: " ri-shield-user-fill",
+      icon: "ri-shield-user-fill",
       parentId: "user",
-    },
+    }] : []),
     {
       id: "forms",
       label: "Forms",
@@ -121,10 +90,6 @@ const Navdata = () => {
       },
       stateVariables: isForms,
     },
-
-
-
-   
   ];
 
   // const isAdminOnly = permissions.length === 1 && permissions[0] === "admin";

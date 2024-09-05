@@ -1,5 +1,4 @@
-/* eslint-disable no-const-assign */
-/* eslint-disable react/prop-types */
+
 import React, { useState } from "react";
 import SearchField from "./DataTableSearch";
 import DataTable, { createTheme } from "react-data-table-component";
@@ -30,6 +29,7 @@ const CommonDataTable = (props) => {
 
   const exportToExcel = async () => {
     updateFilterParams({ ...filterParams, isDownload: true });
+
     try {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
@@ -82,15 +82,7 @@ const CommonDataTable = (props) => {
           </div>
           <div>
             {props.showAddButton && (
-              <Button
-                className="btn btn-primary add-button-margin"
-                color="primary"
-                type="submit"
-                onClick={props.addOnClickMethod}
-              >
-                <i className="ri-add-line"></i>
-                {`${props.buttonName ? props.buttonName : "Add"}`}
-              </Button>
+              <div>{props.form}</div>
             )}
             {props.showOrderButton && (
               <Link

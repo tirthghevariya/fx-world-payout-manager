@@ -11,7 +11,7 @@ export const loginUser = (user, history) => async (dispatch) => {
     //   email: user.email,
     //   password: user.password,
     // });
-    history("/admin/dashboard");
+    history("/forms-elements");
 
     // let data = await response;
 

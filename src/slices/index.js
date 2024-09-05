@@ -13,10 +13,6 @@ import toastReducer from "./toast/reducer";
 // User
 import userReducer from "./users/reducer";
 
-//dashboard
-import dashboardReducer from "./dashboard/reducer";
-
-
 //activity Log
 import activityLogReducer from "./activityLog/reducer";
 
@@ -26,7 +22,6 @@ const rootReducer = combineReducers({
   Login: LoginReducer,
   toast: toastReducer,
   user: userReducer,
-  dashboard: dashboardReducer,
   activityLog: activityLogReducer,
 });
 

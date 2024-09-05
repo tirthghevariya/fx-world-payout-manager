@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, {useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -15,7 +14,7 @@ import {
   Spinner,
 } from "reactstrap";
 import { showToast } from "../../slices/toast/reducer";
-
+import { useNavigate } from "react-router-dom";
 // redux
 import { useSelector, useDispatch } from "react-redux";
 import ParticlesAuth from "./ParticlesAuth";
@@ -40,6 +39,16 @@ const Login = (props) => {
     errorMsg: state.Login.errorMsg,
     loading: state.Login.loading,
   }));
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+
+    if (superAdminUser && superAdminUser.clientId) {
+      navigate("/user");
+    } 
+  }, [navigate]);
 
   const validation = useFormik({
     enableReinitialize: true,

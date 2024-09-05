@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Dropdown,
@@ -6,22 +6,14 @@ import {
   DropdownMenu,
   DropdownToggle,
 } from "reactstrap";
-import { createSelector } from "reselect";
-import { useSelector } from "react-redux";
 
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 
 const ProfileDropdown = () => {
 
-  
-
-  const [userName, setUserName] = useState("Admin");
-console
-  useEffect(() => {
-    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
-    console.log(superAdminUser)
-  }, []);
+  const [userName, ] = useState("Admin");
+  const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
   //Dropdown Toggle
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
@@ -56,8 +48,8 @@ console
           <h6 className="dropdown-header">Welcome {userName}!</h6>
     
           <div className="dropdown-divider"></div>
-         
-          <DropdownItem className="p-0">
+          {superAdminUser && superAdminUser.userType === "super_admin" ?
+           <DropdownItem className="p-0">
             <Link
               to={"/create-user"}
               className="dropdown-item"
@@ -66,6 +58,8 @@ console
               <span className="align-middle">Create User</span>
             </Link>
           </DropdownItem>
+          :""}        
+          
       
          
         </DropdownMenu>

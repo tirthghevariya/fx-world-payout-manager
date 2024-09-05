@@ -1,8 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-// Widgets
-import Widgets from "../pages/Dashboard/Index";
 //Forms
 import BasicElements from "../pages/Forms/formikForm";
 
@@ -17,10 +15,6 @@ import CreateUser from "../pages/CreateUser/createUser";
 const authProtectedRoutes = [
   //charts
 
-
-  // Widgets
-  { path: "/admin/dashboard", component: <Widgets /> },
-
   // Forms
   { path: "/forms-elements", component: <BasicElements /> },
   { path: "/create-user", component: <CreateUser /> },
@@ -33,9 +27,9 @@ const authProtectedRoutes = [
   {
     path: "/",
     exact: true,
-    component: <Navigate to="/admin/dashboard" />,
+    component: <Navigate to="/forms-elements" />,
   },
-  { path: "*", component: <Navigate to="/admin/dashboard" /> },
+  { path: "*", component: <Navigate to="/forms-elements" /> },
 ];
 
 const publicRoutes = [

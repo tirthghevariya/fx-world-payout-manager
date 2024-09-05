@@ -9,6 +9,8 @@ const TextInput = ({
   placeholder,
   validation,
   textarea,
+  readOnly,
+  onChange
 }) => {
   const inputComponent = textarea ? "textarea" : "input"; // Use textarea if specified
 
@@ -22,13 +24,14 @@ const TextInput = ({
         {label}
       </label>
       <Input
+        readOnly={readOnly}
         type={inputComponent}
         maxLength={maxLength}
         className="form-control"
         name={name}
         id={id}
         placeholder={placeholder}
-        onChange={validation.handleChange}
+        onChange={onChange ? onChange:validation.handleChange} 
         invalid={
           validation.touched[name] && validation.errors[name] ? true : false
         }
