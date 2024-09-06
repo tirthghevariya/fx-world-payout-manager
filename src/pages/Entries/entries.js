@@ -4,7 +4,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import CommonDataTable from "../../common/DataTable";
 import { db } from "../../firebase";
 import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
-import AddForm from "./addForm";
+import AddAdminForm from "./addAdminForm";
 import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
 import { useDispatch,useSelector } from "react-redux";
@@ -13,8 +13,8 @@ import { updateState } from "../../slices/users/reducer";
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
-    <ModalHeader toggle={toggle}>Delete User</ModalHeader>
-    <ModalBody>Are you sure you want to delete this User?</ModalBody>
+    <ModalHeader toggle={toggle}>Delete Entry</ModalHeader>
+    <ModalBody>Are you sure you want to delete this entry?</ModalBody>
     <ModalFooter>
       <Button color="secondary" onClick={toggle}>Cancel</Button>
       <Button color="danger" onClick={onDelete}>Delete</Button>
@@ -22,7 +22,7 @@ const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   </Modal>
 );
 
-const Users = () => {
+const Entries = () => {
   const [fetchingData, setFetchingData] = useState(false);
   const [formEntries, setFormEntries] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -34,7 +34,7 @@ const Users = () => {
   useEffect(() => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
     if (superAdminUser && superAdminUser.clientId) {
-      fetchData();
+      fetchFormEntries();
     } else {
       navigate("/payout-form");
     }
@@ -43,10 +43,10 @@ const Users = () => {
   const {  filterParams } =
     useSelector((state) => state.user);
 
-  const fetchData = async () => {
+  const fetchFormEntries = async () => {
     setFetchingData(true);
     try {
-      const querySnapshot = await getDocs(collection(db, "users"));
+      const querySnapshot = await getDocs(collection(db, "formEntries"));
       const entries = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -60,6 +60,7 @@ const Users = () => {
     }
   };
 
+
   const openDeleteModal = (id) => {
     setSelectedEntryId(id);
     setDeleteModal(true);
@@ -72,34 +73,51 @@ const Users = () => {
 
 
   const StatusDropdown = ({ value, onChange }) => {
-    return (<select
-      value={value}
-      onChange={onChange}
-      className="status-dropdown"
-    >
-      <option value="admin">Admin</option>
-      <option value="super_admin">Super Admin</option>
-    </select>)
+    const getBackgroundColor = (status) => {
+      switch (status) {
+        case 'success':
+          return '#A1E2A0';
+        case 'not-eligible':
+          return '#FFF48E'; 
+        case 'reinvest':
+          return '#FCBDF8'; 
+        case 'pending':
+          return '#FF917D';
+        default:
+          return '#f9f9f9';
+      }
+    };
+    return (
+      <select
+        value={value}
+        onChange={onChange}
+        className="status-dropdown"
+        style={{ backgroundColor: getBackgroundColor(value) }}  
+      >
+        <option value="success" style={{ backgroundColor: getBackgroundColor('success') }}>Success</option>
+        <option value="not-eligible" style={{ backgroundColor: getBackgroundColor('not-eligible') }}>Not Eligible</option>
+        <option value="reinvest" style={{ backgroundColor: getBackgroundColor('reinvest') }}>Re Invest</option>
+        <option value="pending" style={{ backgroundColor: getBackgroundColor('pending') }}>Pending</option>
+      </select>
+    );
   };
 
   const handleStatusChange = async (event, id) => {
     const newStatus = event.target.value;
     try {
-      newStatus === "super_admin" ? dispatch(updateState({ formOpen: true, isSuperForm: true }))
-        : dispatch(updateState({ formOpen: true, isSuperForm: false }))    
-
-        // await updateDoc(doc(db, 'users', id), { userType: newStatus });
-      // fetchData(); 
+      await updateDoc(doc(db, 'formEntries', id), { status: newStatus });
+      fetchFormEntries(); 
     } catch (error) {
-      console.error('Error updating userType:', error.message);
+      console.error('Error updating status:', error.message);
     }
   };
+
 
   const handleDeleteEntry = async () => {
     if (selectedEntryId) {
       try {
-        await deleteDoc(doc(db, "users", selectedEntryId));
-        fetchData(); 
+        await deleteDoc(doc(db, "formEntries", selectedEntryId));
+        fetchFormEntries(); 
         closeDeleteModal();
       } catch (error) {
         console.error("Error deleting entry:", error.message);
@@ -114,14 +132,61 @@ const Users = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
-      selector: (row) => row.username,
-      width:"20%"
+      selector: (row) => row.clientName,
     },
     {
-      name: <span className="font-weight-bold fs-13">Type</span>,
+      name: <span className="font-weight-bold fs-13">My Wallet</span>,
+      selector: (row) => {
+        const myWallet = parseFloat(row.myWallet) || 0.0;
+        return `$${myWallet.toFixed(2)}`;
+      },
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Trade</span>,
+      selector: (row) => {
+        const trade = parseFloat(row.trade) || 0.0;
+        return `$${trade.toFixed(2)}`;
+      },
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Total</span>,
+      selector: (row) => {
+        const myWallet = parseFloat(row.myWallet) || 0.0;
+        const trade = parseFloat(row.trade) || 0.0;
+        const total = myWallet + trade;
+        const calculatedValue = (total * 0.05).toFixed(2);
+        return `$${calculatedValue}`;
+      },
+    },
+   
+    {
+      name: <span className="font-weight-bold fs-13">Income In $</span>,
+      selector: (row) => {
+        const myWallet = parseFloat(row.myWallet) || 0.0;
+        const trade = parseFloat(row.trade) || 0.0;
+        const total = myWallet + trade;
+        const calculatedValue = (total * 0.05).toFixed(2);
+        const column10Value = (total - parseFloat(calculatedValue)).toFixed(2);
+        return `$${column10Value}`;
+      },
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">Income In ₹</span>,
+      selector: (row) => {
+        const myWallet = parseFloat(row.myWallet) || 0.0;
+        const trade = parseFloat(row.trade) || 0.0;
+        const total = myWallet + trade;
+        const calculatedValue = (total * 0.05).toFixed(2);
+        const inrValue = (total - parseFloat(calculatedValue)) * 85;
+        return `₹${inrValue.toFixed(2)}`;
+      },
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Status</span>,
       cell: (row) => (
         <StatusDropdown
-          value={row.userType}
+          value={row.status}
           onChange={(e) => handleStatusChange(e, row.id)}
         />
       ),
@@ -148,21 +213,21 @@ const Users = () => {
       </div>
       <div className="table-container">
         <CommonDataTable
-          isShowTotal={false}
+          isShowTotal={true}
           columns={columns}
           data={formEntries}
           totalRows={formEntries.length}
           loading={fetchingData}
-          showAddButton={true}
+          showAddButton={false}
           checkboxEnabled={false}
           filterParams={filterParams}
           showExportButton={true}
           exportFileName="userData"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
-            fetchData={fetchData} 
+            fetchData={fetchFormEntries} 
 
-          form={<AddForm />}
+          form={<AddAdminForm />}
         />
       </div>
       <DeleteModal
@@ -174,4 +239,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Entries;

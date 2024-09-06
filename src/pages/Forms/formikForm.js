@@ -30,7 +30,7 @@ const BasicElements = () => {
             try {
         await addDoc(collection(db, "formEntries"), {
           ...values,
-          status: "success",
+          status: "pending",
           notes: "Cash",
         });
         dispatch(

@@ -49,8 +49,8 @@ const Navdata = () => {
     if (iscurrentState !== "Forms") {
       setIsForms(false);
     }
-    if (iscurrentState === "/forms-elements") {
-      history("/forms-elements");
+    if (iscurrentState === "/payout-form") {
+      history("/payout-form");
       document.body.classList.add("twocolumn-panel");
     }
   }, [
@@ -69,19 +69,30 @@ const Navdata = () => {
 
 
   const menuItems = [
+
+    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
+      id: "entries",
+      pkey: "Entries",
+      label: "Entries",
+      link: "/entries",
+      icon: "ri-shield-user-fill",
+      parentId: "entries",
+    }] : []),  
+  
     ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
       id: "user",
       pkey: "Users",
-      label: "Entries",
-      link: "/user",
+      label: "Users",
+      link: "/users",
       icon: "ri-shield-user-fill",
       parentId: "user",
     }] : []),
+
     {
       id: "forms",
-      label: "Forms",
+      label: "Payout Form",
       icon: "ri-file-list-3-line",
-      link: "/forms-elements",
+      link: "/payout-form",
       click: function (e) {
         e.preventDefault();
         setIsForms(!isForms);
@@ -109,7 +120,7 @@ const Navdata = () => {
   //       id: "forms",
   //       label: "Forms",
   //       icon: "ri-file-list-3-line",
-  //       link: "/forms-elements",
+  //       link: "/payout-form",
   //     },
   //     {
   //       id: "tables",

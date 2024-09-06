@@ -53,12 +53,6 @@ export const createUserValidationSchema = Yup.object().shape({
     .required("Please Enter Client ID")
     .matches(/^FW\d{6}$/, "Client ID must start with 'FW' followed by 6 digits"),
   username: Yup.string().required("Please Enter Username"),
-  userType: Yup.string()
-    .required("Please Select User Type")
-    .oneOf(["super_admin", "admin"], "Invalid User Type"),
-  adminName: Yup.string()
-    .required("Please Select Admin Name")
-    .oneOf(["bhavesh_agravat", "sandeep_agravat"], "Invalid Admin Name"),
 });
 
 

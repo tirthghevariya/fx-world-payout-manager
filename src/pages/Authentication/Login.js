@@ -46,7 +46,7 @@ const Login = (props) => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
     if (superAdminUser && superAdminUser.clientId) {
-      navigate("/user");
+      navigate("/entries");
     } 
   }, [navigate]);
 
@@ -79,7 +79,7 @@ const Login = (props) => {
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           localStorage.setItem("superAdminUser", JSON.stringify(userData));
-          props.router.navigate("/user");
+          props.router.navigate("/entries");
         } else {
           dispatch(
             showToast({

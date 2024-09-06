@@ -8,28 +8,32 @@ import BasicElements from "../pages/Forms/formikForm";
 import Login from "../pages/Authentication/Login";
 import Logout from "../pages/Authentication/Logout";
 
+//entries
+import Entries from "../pages/Entries/entries";
+import CreateUser from "../pages/CreateUser/createUser";
+
 //users
 import Users from "../pages/Users/users";
-import CreateUser from "../pages/CreateUser/createUser";
 
 const authProtectedRoutes = [
   //charts
 
   // Forms
-  { path: "/forms-elements", component: <BasicElements /> },
+  { path: "/payout-form", component: <BasicElements /> },
   { path: "/create-user", component: <CreateUser /> },
 
-  // users
-  { path: "/user", component: <Users /> },
+  // entries
+  { path: "/entries", component: <Entries /> },
+  { path: "/users", component: <Users /> },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
   {
     path: "/",
     exact: true,
-    component: <Navigate to="/forms-elements" />,
+    component: <Navigate to="/payout-form" />,
   },
-  { path: "*", component: <Navigate to="/forms-elements" /> },
+  { path: "*", component: <Navigate to="/payout-form" /> },
 ];
 
 const publicRoutes = [

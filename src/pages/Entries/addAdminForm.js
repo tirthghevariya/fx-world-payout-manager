@@ -10,17 +10,19 @@ import { showToast } from "../../slices/toast/reducer";
 import { createUserValidationSchema } from "../../Components/validations";
 import TextInput from "../../common/textInput";
 
-const AddForm = () => {
+const AddAdminForm = () => {
   const [fetchingData, setFetchingData] = useState(false);
   const dispatch = useDispatch();
 
   const { insersUser } =
     useSelector((state) => state.user);
 
+
   useEffect(() => {
     if (!fetchingData && insersUser.formOpen) {
       setFetchingData(true);
     }
+
   }, [dispatch,  insersUser]);
   const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
@@ -124,4 +126,4 @@ const AddForm = () => {
   );
 };
 
-export default AddForm;
+export default AddAdminForm;

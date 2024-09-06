@@ -7,57 +7,9 @@ import { Container, Row, Col, Card, CardBody, Form, Button } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TextInput from "../../common/textInput";
 import SelectDropdown from "../../common/selectDropdown";
-import { db } from "../../firebase";
-import { collection, addDoc } from "firebase/firestore";
-import { showToast } from "../../slices/toast/reducer";
+
 
 const CreateUser = () => {
-    const userTypeOptions = [
-        { value: "super_admin", label: "Super Admin" },
-        { value: "admin", label: "Admin" },
-    ];
-    const [isSubmitting, setSubmitting] = useState(false); 
-    const formRef = React.useRef(null);
-    const dispatch = useDispatch();
-
-    const validation = useFormik({
-        enableReinitialize: true,
-        initialValues: {
-            clientId: "",
-            username: "",
-            userType: "admin",
-            adminName: "bhavesh_agravat",
-        },
-        validationSchema: createUserValidationSchema,
-        onSubmit: async (values, { resetForm }) => {
-            try {
-                setSubmitting(true);
-                await addDoc(collection(db, "users"), values);
-                dispatch(
-                    showToast({
-                        type: "success",
-                        msg: "Form Submitted successfully",
-                    })
-                );
-                resetForm();
-            } catch (error) {
-                dispatch(
-                    showToast({
-                        type: "error",
-                        msg: "Error submitting form: " + error.message,
-                    })
-                );
-            } finally {
-                setSubmitting(false);
-            }
-        },
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        validation.handleSubmit();
-        return false;
-    };
 
     return (
         <React.Fragment>

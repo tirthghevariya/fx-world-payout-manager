@@ -375,4 +375,10 @@ table td {
   background-color: #f9f9f9;
 }
 
+.delete-button {
+  border-radius: 4px;
+  padding: 4px;
+  background-color: #FF917D;
+}
+
 

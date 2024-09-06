@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   Dropdown,
-  DropdownItem,
   DropdownMenu,
   DropdownToggle,
 } from "reactstrap";
@@ -12,7 +10,6 @@ import avatar1 from "../../assets/images/users/avatar-1.jpg";
 
 const ProfileDropdown = () => {
 
-  const [userName, ] = useState("Admin");
   const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
   //Dropdown Toggle
@@ -36,19 +33,19 @@ const ProfileDropdown = () => {
             />
             <span className="text-start ms-xl-2">
               <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                {userName}
+                {superAdminUser.userType === "super_admin" ?"Super Admin":"Admin" || "Admin"}
               </span>
               <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                Admin
+                {superAdminUser.username || "Admin"}
               </span>
             </span>
           </span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <h6 className="dropdown-header">Welcome {userName}!</h6>
+          <h6 className="dropdown-header">Welcome {superAdminUser.username ||"Admin"}!</h6>
     
           <div className="dropdown-divider"></div>
-          {superAdminUser && superAdminUser.userType === "super_admin" ?
+          {/* {superAdminUser && superAdminUser.userType === "super_admin" ?
            <DropdownItem className="p-0">
             <Link
               to={"/create-user"}
@@ -59,9 +56,7 @@ const ProfileDropdown = () => {
             </Link>
           </DropdownItem>
           :""}        
-          
-      
-         
+           */}
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>
