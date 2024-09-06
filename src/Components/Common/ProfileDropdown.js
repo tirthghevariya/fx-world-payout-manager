@@ -17,6 +17,9 @@ const ProfileDropdown = () => {
   const toggleProfileDropdown = () => {
     setIsProfileDropdown(!isProfileDropdown);
   };
+
+  const userType = superAdminUser?.userType || "Admin";
+  const displayUserType = userType === "super_admin" ? "Super Admin" : "Admin";
   return (
     <React.Fragment>
       <Dropdown
@@ -33,16 +36,16 @@ const ProfileDropdown = () => {
             />
             <span className="text-start ms-xl-2">
               <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                {superAdminUser.userType === "super_admin" ?"Super Admin":"Admin" || "Admin"}
+                {superAdminUser?.userType === "super_admin" ?"Super Admin":"Admin" || "Admin"}
               </span>
               <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                {superAdminUser.username || "Admin"}
+                {superAdminUser?.username || "Admin"}
               </span>
             </span>
           </span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <h6 className="dropdown-header">Welcome {superAdminUser.username ||"Admin"}!</h6>
+          <h6 className="dropdown-header">Welcome {superAdminUser?.username ||"Admin"}!</h6>
     
           <div className="dropdown-divider"></div>
           {/* {superAdminUser && superAdminUser.userType === "super_admin" ?
