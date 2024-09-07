@@ -131,7 +131,7 @@ const Login = (props) => {
                     <div className="text-center mt-2">
                       <h5 className="text-primary">Welcome Back !</h5>
                       <p className="text-muted">
-                        Sign in to continue to Velzon.
+                        Sign in to continue to fx world payout manager.
                       </p>
                     </div>
                     {errorMsg && errorMsg ? (

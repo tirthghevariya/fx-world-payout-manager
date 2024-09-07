@@ -48,11 +48,21 @@ export const validationSchema = Yup.object().shape({
   gender: Yup.string(),
 });
 
-export const createUserValidationSchema = Yup.object().shape({
+export const createAdminValidationSchema = Yup.object().shape({
   clientId: Yup.string()
     .required("Please Enter Client ID")
     .matches(/^FW\d{6}$/, "Client ID must start with 'FW' followed by 6 digits"),
   username: Yup.string().required("Please Enter Username"),
+});
+
+export const createSuperAdminValidationSchema = Yup.object().shape({
+  clientId: Yup.string(),
+  username: Yup.string(),
+  password: Yup.string().required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .required('Confirm Password is required'),
+  adminName: Yup.string(),
 });
 
 

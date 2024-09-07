@@ -7,10 +7,10 @@ const Footer = () => {
       <footer className="footer">
         <Container fluid>
           <Row>
-            <Col sm={6}>{new Date().getFullYear()} © Code Bridge.</Col>
+            <Col sm={6}>{new Date().getFullYear()} ©fx world payout manager.</Col>
             <Col sm={6}>
               <div className="text-sm-end d-none d-sm-block">
-                Design & Develop by WRP
+                Design & Develop by Darshan Chataniyaswami
               </div>
             </Col>
           </Row>

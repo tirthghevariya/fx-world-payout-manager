@@ -7,9 +7,8 @@ import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firesto
 import AddForm from "./addForm";
 import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../slices/users/reducer";
-
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
@@ -25,11 +24,13 @@ const DeleteModal = ({ isOpen, toggle, onDelete }) => (
 const Users = () => {
   const [fetchingData, setFetchingData] = useState(false);
   const [formEntries, setFormEntries] = useState([]);
+  const [filteredEntries, setFilteredEntries] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntryId, setSelectedEntryId] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { filterParams, insersUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
@@ -40,9 +41,6 @@ const Users = () => {
     }
   }, [navigate]);
 
-  const {  filterParams } =
-    useSelector((state) => state.user);
-
   const fetchData = async () => {
     setFetchingData(true);
     try {
@@ -51,14 +49,26 @@ const Users = () => {
         ...doc.data(),
         id: doc.id,
       }));
-
       setFormEntries(entries);
+      setFilteredEntries(entries); 
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
       setFetchingData(false);
     }
   };
+
+  useEffect(() => {
+    if (insersUser.search) {
+      const filtered = formEntries.filter((entry) =>
+        entry.username.toLowerCase().includes(insersUser.search.toLowerCase()) ||
+        entry.clientId.toLowerCase().includes(insersUser.search.toLowerCase())
+      );
+      setFilteredEntries(filtered);
+    } else {
+      setFilteredEntries(formEntries); 
+    }
+  }, [insersUser.search, formEntries]);
 
   const openDeleteModal = (id) => {
     setSelectedEntryId(id);
@@ -70,36 +80,29 @@ const Users = () => {
     setSelectedEntryId(null);
   };
 
-
-  const StatusDropdown = ({ value, onChange }) => {
-    return (<select
-      value={value}
-      onChange={onChange}
-      className="status-dropdown"
-    >
-      <option value="admin">Admin</option>
-      <option value="super_admin">Super Admin</option>
-    </select>)
-  };
-
-  const handleStatusChange = async (event, id) => {
+  const handleStatusChange = async (event, id,row) => {
     const newStatus = event.target.value;
-    try {
-      newStatus === "super_admin" ? dispatch(updateState({ formOpen: true, isSuperForm: true }))
-        : dispatch(updateState({ formOpen: true, isSuperForm: false }))    
-
-        // await updateDoc(doc(db, 'users', id), { userType: newStatus });
-      // fetchData(); 
-    } catch (error) {
-      console.error('Error updating userType:', error.message);
+    if (newStatus === "super_admin") {
+      // Open AddForm when 'super_admin' is selected
+      dispatch(updateState({ formOpen: true, isSuperForm: true, userData: row }));
+    } else {
+      // Update userType in Firebase when any other option is selected
+      try {
+        const userDocRef = doc(db, "users", id);
+        await updateDoc(userDocRef, { userType: newStatus });
+        fetchData();  // Refresh the data after update
+      } catch (error) {
+        console.error("Error updating userType:", error.message);
+      }
     }
   };
+
 
   const handleDeleteEntry = async () => {
     if (selectedEntryId) {
       try {
         await deleteDoc(doc(db, "users", selectedEntryId));
-        fetchData(); 
+        fetchData();
         closeDeleteModal();
       } catch (error) {
         console.error("Error deleting entry:", error.message);
@@ -115,15 +118,19 @@ const Users = () => {
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
       selector: (row) => row.username,
-      width:"20%"
+      width: "20%",
     },
     {
       name: <span className="font-weight-bold fs-13">Type</span>,
       cell: (row) => (
-        <StatusDropdown
+        <select
           value={row.userType}
-          onChange={(e) => handleStatusChange(e, row.id)}
-        />
+          onChange={(e) => handleStatusChange(e, row.id, row)}
+          className="status-dropdown"
+        >
+          <option value="admin">Admin</option>
+          <option value="super_admin">Super Admin</option>
+        </select>
       ),
     },
     {
@@ -146,12 +153,13 @@ const Users = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
+      
       <div className="table-container">
         <CommonDataTable
           isShowTotal={false}
           columns={columns}
-          data={formEntries}
-          totalRows={formEntries.length}
+          data={filteredEntries}
+          totalRows={filteredEntries.length}
           loading={fetchingData}
           showAddButton={true}
           checkboxEnabled={false}
@@ -160,9 +168,7 @@ const Users = () => {
           exportFileName="userData"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
-            fetchData={fetchData} 
-
-          form={<AddForm />}
+          form={<AddForm fetchData={fetchData} />} 
         />
       </div>
       <DeleteModal

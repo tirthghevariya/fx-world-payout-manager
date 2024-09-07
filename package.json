@@ -27,6 +27,7 @@
     "apexcharts": "^3.48.0",
     "axios": "^1.6.8",
     "axios-mock-adapter": "^1.22.0",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",
     "echarts": "^5.5.0",

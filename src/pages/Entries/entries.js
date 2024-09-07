@@ -4,12 +4,10 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import CommonDataTable from "../../common/DataTable";
 import { db } from "../../firebase";
 import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
-import AddAdminForm from "./addAdminForm";
 import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../slices/users/reducer";
-
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
@@ -22,14 +20,47 @@ const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   </Modal>
 );
 
+const StatusDropdown = ({ value, onChange }) => {
+  const getBackgroundColor = (status) => {
+    switch (status) {
+      case 'success':
+        return '#A1E2A0';
+      case 'not-eligible':
+        return '#FFF48E';
+      case 'reinvest':
+        return '#FCBDF8';
+      case 'pending':
+        return '#FF917D';
+      default:
+        return '#f9f9f9';
+    }
+  };
+  return (
+    <select
+      value={value}
+      onChange={onChange}
+      className="status-dropdown"
+      style={{ backgroundColor: getBackgroundColor(value) }}
+    >
+      <option value="success" style={{ backgroundColor: getBackgroundColor('success') }}>Success</option>
+      <option value="not-eligible" style={{ backgroundColor: getBackgroundColor('not-eligible') }}>Not Eligible</option>
+      <option value="reinvest" style={{ backgroundColor: getBackgroundColor('reinvest') }}>Re Invest</option>
+      <option value="pending" style={{ backgroundColor: getBackgroundColor('pending') }}>Pending</option>
+    </select>
+  );
+};
+
 const Entries = () => {
   const [fetchingData, setFetchingData] = useState(false);
   const [formEntries, setFormEntries] = useState([]);
+  const [filteredEntries, setFilteredEntries] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntryId, setSelectedEntryId] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { filterParams, insersUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
@@ -40,9 +71,6 @@ const Entries = () => {
     }
   }, [navigate]);
 
-  const {  filterParams } =
-    useSelector((state) => state.user);
-
   const fetchFormEntries = async () => {
     setFetchingData(true);
     try {
@@ -51,8 +79,8 @@ const Entries = () => {
         ...doc.data(),
         id: doc.id,
       }));
-
       setFormEntries(entries);
+      setFilteredEntries(entries);  
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
@@ -60,6 +88,19 @@ const Entries = () => {
     }
   };
 
+  useEffect(() => {
+    if (insersUser && insersUser.search) {
+      const searchValue = insersUser.search.toLowerCase();
+      const filtered = formEntries.filter((entry) =>
+        entry.clientId.toLowerCase().includes(searchValue) ||
+        entry.clientName.toLowerCase().includes(searchValue)||
+        entry.currentMonth.toLowerCase().includes(searchValue)
+      );
+      setFilteredEntries(filtered);  
+    } else {
+      setFilteredEntries(formEntries); 
+    }
+  }, [insersUser, formEntries]);
 
   const openDeleteModal = (id) => {
     setSelectedEntryId(id);
@@ -71,59 +112,28 @@ const Entries = () => {
     setSelectedEntryId(null);
   };
 
-
-  const StatusDropdown = ({ value, onChange }) => {
-    const getBackgroundColor = (status) => {
-      switch (status) {
-        case 'success':
-          return '#A1E2A0';
-        case 'not-eligible':
-          return '#FFF48E'; 
-        case 'reinvest':
-          return '#FCBDF8'; 
-        case 'pending':
-          return '#FF917D';
-        default:
-          return '#f9f9f9';
-      }
-    };
-    return (
-      <select
-        value={value}
-        onChange={onChange}
-        className="status-dropdown"
-        style={{ backgroundColor: getBackgroundColor(value) }}  
-      >
-        <option value="success" style={{ backgroundColor: getBackgroundColor('success') }}>Success</option>
-        <option value="not-eligible" style={{ backgroundColor: getBackgroundColor('not-eligible') }}>Not Eligible</option>
-        <option value="reinvest" style={{ backgroundColor: getBackgroundColor('reinvest') }}>Re Invest</option>
-        <option value="pending" style={{ backgroundColor: getBackgroundColor('pending') }}>Pending</option>
-      </select>
-    );
-  };
-
-  const handleStatusChange = async (event, id) => {
-    const newStatus = event.target.value;
-    try {
-      await updateDoc(doc(db, 'formEntries', id), { status: newStatus });
-      fetchFormEntries(); 
-    } catch (error) {
-      console.error('Error updating status:', error.message);
-    }
-  };
-
-
   const handleDeleteEntry = async () => {
     if (selectedEntryId) {
       try {
         await deleteDoc(doc(db, "formEntries", selectedEntryId));
-        fetchFormEntries(); 
+        fetchFormEntries();
         closeDeleteModal();
       } catch (error) {
         console.error("Error deleting entry:", error.message);
       }
     }
   };
+
+  const handleStatusChange = async (event, id) => {
+    const newStatus = event.target.value;
+    try {
+      await updateDoc(doc(db, 'formEntries', id), { status: newStatus });
+      fetchFormEntries();
+    } catch (error) {
+      console.error('Error updating status:', error.message);
+    }
+  };
+
 
   const columns = [
     {
@@ -133,6 +143,7 @@ const Entries = () => {
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
       selector: (row) => row.clientName,
+      width:"20%"
     },
     {
       name: <span className="font-weight-bold fs-13">My Wallet</span>,
@@ -211,12 +222,13 @@ const Entries = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
+      
       <div className="table-container">
         <CommonDataTable
           isShowTotal={true}
           columns={columns}
-          data={formEntries}
-          totalRows={formEntries.length}
+          data={filteredEntries} 
+          totalRows={filteredEntries.length}
           loading={fetchingData}
           showAddButton={false}
           checkboxEnabled={false}
@@ -225,9 +237,7 @@ const Entries = () => {
           exportFileName="userData"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
-            fetchData={fetchFormEntries} 
-
-          form={<AddAdminForm />}
+          fetchData={fetchFormEntries}
         />
       </div>
       <DeleteModal

@@ -3,8 +3,9 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownToggle,
+  DropdownItem
 } from "reactstrap";
-
+import { Link } from "react-router-dom";
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 
@@ -18,9 +19,7 @@ const ProfileDropdown = () => {
     setIsProfileDropdown(!isProfileDropdown);
   };
 
-  const userType = superAdminUser?.userType || "Admin";
-  const displayUserType = userType === "super_admin" ? "Super Admin" : "Admin";
-  return (
+    return (
     <React.Fragment>
       <Dropdown
         isOpen={isProfileDropdown}
@@ -48,18 +47,20 @@ const ProfileDropdown = () => {
           <h6 className="dropdown-header">Welcome {superAdminUser?.username ||"Admin"}!</h6>
     
           <div className="dropdown-divider"></div>
-          {/* {superAdminUser && superAdminUser.userType === "super_admin" ?
            <DropdownItem className="p-0">
             <Link
-              to={"/create-user"}
+              to={"/login"}
               className="dropdown-item"
+                onClick={() => {
+                  localStorage.removeItem("superAdminUser");
+                }}
             >
-              <i class="ri-user-add-fill text-muted fs-16 align-middle me-1"></i>
-              <span className="align-middle">Create User</span>
+                  <i class="ri-logout-circle-r-line fs-16 align-middle me-2"></i>
+              <span className="align-middle">Logout</span>
             </Link>
           </DropdownItem>
-          :""}        
-           */}
+               
+          
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>

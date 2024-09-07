@@ -19,7 +19,8 @@ export const initialState = {
   insersUser: {
     formOpen: false,
     loading: false,
-    isSuperForm:false
+    isSuperForm:false,
+    userData:{}
   },
 
   updateUser: {

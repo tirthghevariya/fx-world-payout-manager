@@ -2,9 +2,12 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useState } from "react";
 import { Input } from "reactstrap";
-
+import { updateState } from "../slices/users/reducer";
+import { useDispatch } from "react-redux";
 const SearchField = (props) => {
   const [filterParams, setFilterParams] = useState(props.filterParams || {});
+
+const dispatch = useDispatch();
 
   return (
     <div className="search-max-width mb-4">
@@ -23,7 +26,7 @@ const SearchField = (props) => {
               newFilterParams.search.length === 0 ||
               newFilterParams.search.length >= 3
             ) {
-              props.fetchData(newFilterParams);
+              dispatch(updateState({ search: newFilterParams.search }))
             }
           }}
           id="iconrightInput"

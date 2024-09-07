@@ -1,12 +1,11 @@
 /* eslint-disable no-const-assign */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap";
 
 //import images
 import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
-import logoLight from "../assets/images/logo-light.png";
+import logoLight from "../assets/images/cp-logo.png";
 
 //import Components
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
