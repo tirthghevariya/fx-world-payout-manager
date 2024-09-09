@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useFormik } from "formik";
-import { createUserValidationSchema } from "../../Components/validations";
+import React from "react";
 import UiContent from "../../Components/Common/UiContent";
 import { Container, Row, Col, Card, CardBody, Form, Button } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TextInput from "../../common/textInput";
 import SelectDropdown from "../../common/selectDropdown";
 
-
 const CreateUser = () => {
-
     return (
         <React.Fragment>
             <UiContent />

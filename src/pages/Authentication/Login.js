@@ -17,7 +17,6 @@ import { showToast } from "../../slices/toast/reducer";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import ParticlesAuth from "./ParticlesAuth";
-import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { enableLoading, disableLoading } from "../../slices/auth/login/reducer";
@@ -121,9 +120,8 @@ const Login = (props) => {
               <Col lg={12}>
                 <div className="text-center mt-sm-5 mb-4 text-white-50 mt-3">
                   <div className="mt-3">
-                    <Link to="/" className="d-inline-block auth-logo">
-                      <img src={logoLight} alt="" height="30" />
-                    </Link>
+                      <img src={logoLight} alt="" height="60" />
+                    
                   </div>
                   <p className="mt-3 fs-15">
                     Premium Admin & Dashboard Template paper <br />
@@ -136,7 +134,7 @@ const Login = (props) => {
               <Col md={8} lg={6} xl={5}>
                 <Card className="mt-4">
                   <CardBody className="p-4">
-                    <div className="text-center mt-2">
+                    <div className="text-center">
                       <h5 className="text-primary">Welcome Back !</h5>
                       <p className="text-muted">
                         Sign in to continue to fx world payout manager.

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
 import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../slices/users/reducer";
+import { showToast } from "../../slices/toast/reducer";
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
@@ -34,7 +35,6 @@ const Users = () => {
 
   useEffect(() => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
-    console.log("superAdminUser", superAdminUser?.adminName)
 
     if (superAdminUser && superAdminUser.clientId) {
       fetchData();
@@ -78,8 +78,8 @@ const Users = () => {
     }
   }, [insersUser.search, formEntries]);
 
-  const openDeleteModal = (id) => {
-    setSelectedEntryId(id);
+  const openDeleteModal = (row) => {
+    setSelectedEntryId(row);
     setDeleteModal(true);
   };
 
@@ -91,25 +91,33 @@ const Users = () => {
   const handleStatusChange = async (event, id,row) => {
     const newStatus = event.target.value;
     if (newStatus === "super_admin") {
-      // Open AddForm when 'super_admin' is selected
       dispatch(updateState({ formOpen: true, isSuperForm: true, userData: row }));
     } else {
-      // Update userType in Firebase when any other option is selected
       try {
         const userDocRef = doc(db, "users", id);
         await updateDoc(userDocRef, { userType: newStatus });
-        fetchData();  // Refresh the data after update
+        fetchData();
       } catch (error) {
         console.error("Error updating userType:", error.message);
       }
     }
   };
 
-
   const handleDeleteEntry = async () => {
     if (selectedEntryId) {
+      if (selectedEntryId.userType === 'super_admin') {
+        console.log('This user cannot be deleted.');
+        closeDeleteModal();
+        dispatch(
+          showToast({
+            type: "error",
+            msg: "Super admin cannot be delete",
+          })
+        );    
+        return; 
+      }
       try {
-        await deleteDoc(doc(db, "users", selectedEntryId));
+        await deleteDoc(doc(db, "users", selectedEntryId.id));
         fetchData();
         closeDeleteModal();
       } catch (error) {
@@ -117,6 +125,7 @@ const Users = () => {
       }
     }
   };
+
 
   const columns = [
     {
@@ -145,7 +154,7 @@ const Users = () => {
       cell: (row) => (
          <a
             href="#"
-          onClick={(event) => openDeleteModal(row.id)}
+          onClick={(event) =>  openDeleteModal(row)}
             className="p-2 fs-13 nav-link refresh-button"
           >
             <i
