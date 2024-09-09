@@ -34,6 +34,8 @@ const Users = () => {
 
   useEffect(() => {
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+    console.log("superAdminUser", superAdminUser?.adminName)
+
     if (superAdminUser && superAdminUser.clientId) {
       fetchData();
     } else {
@@ -41,22 +43,28 @@ const Users = () => {
     }
   }, [navigate]);
 
+
   const fetchData = async () => {
     setFetchingData(true);
     try {
+      const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
       const querySnapshot = await getDocs(collection(db, "users"));
-      const entries = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      const entries = querySnapshot.docs
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .filter((entry) => entry.adminName === superAdminUser?.adminName); 
+
       setFormEntries(entries);
-      setFilteredEntries(entries); 
+      setFilteredEntries(entries);
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
       setFetchingData(false);
     }
   };
+
 
   useEffect(() => {
     if (insersUser.search) {
@@ -118,7 +126,6 @@ const Users = () => {
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
       selector: (row) => row.username,
-      width: "20%",
     },
     {
       name: <span className="font-weight-bold fs-13">Type</span>,
@@ -136,12 +143,16 @@ const Users = () => {
     {
       name: <span className="font-weight-bold fs-13">Actions</span>,
       cell: (row) => (
-        <button
-          className="btn btn-danger delete-button"
-          onClick={() => openDeleteModal(row.id)}
-        >
-          Delete
-        </button>
+         <a
+            href="#"
+          onClick={(event) => openDeleteModal(row.id)}
+            className="p-2 fs-13 nav-link refresh-button"
+          >
+            <i
+              className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
+              style={{ color: "var(--vz-danger)" }}
+            ></i>
+          </a>
       ),
     },
   ];

@@ -25,7 +25,6 @@ const CommonDataTable = (props) => {
     await props.fetchData(newFilterParams);
   };
 
-  
   const exportToExcel = async () => {
     updateFilterParams({ ...filterParams, isDownload: true });
 

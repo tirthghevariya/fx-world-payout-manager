@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/logo-sm.png";
-import logoDark from "../assets/images/logo-dark.png";
 import logoLight from "../assets/images/logo-light.png";
 
 //Import Components
@@ -45,22 +44,14 @@ const Sidebar = ({ layoutType }) => {
     <React.Fragment>
       <div className="app-menu navbar-menu">
         <div className="navbar-brand-box">
-          <Link to="/" className="logo logo-dark">
+          <Link to="/" className="logo logo-light mt-1">
             <span className="logo-sm">
-              <img src={logoSm} alt="" height="22" />
+              <img src={logoSm} alt="" height="26" className="blend-mode-logo" />
             </span>
             <span className="logo-lg">
-              <img src={logoDark} alt="" height="17" />
+              <img src={logoLight} alt="" height="58" className="blend-mode-logo " />
             </span>
-          </Link>
 
-          <Link to="/" className="logo logo-light">
-            <span className="logo-sm">
-              <img src={logoSm} alt="" height="22" />
-            </span>
-            <span className="logo-lg">
-              <img src={logoLight} alt="" height="17" />
-            </span>
           </Link>
           <button
             onClick={addEventListenerOnSmHoverMenu}

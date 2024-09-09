@@ -19,9 +19,6 @@ export const entriesSchema = Yup.object({
     .min(0, "Trade value must be greater than or equal to 0")
     .required("Trade value is required"), // Allow user to enter, or default to 0.0
 
-  request: Yup.string()
-    .notRequired(), // No validation required, it's an optional field
-
   // The following fields are hidden, so no need to validate:
   status: Yup.string(),
   notes: Yup.string(),

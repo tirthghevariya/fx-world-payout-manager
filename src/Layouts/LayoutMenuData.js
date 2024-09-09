@@ -75,7 +75,7 @@ const Navdata = () => {
       pkey: "Entries",
       label: "Entries",
       link: "/entries",
-      icon: "ri-shield-user-fill",
+      icon: " ri-file-list-fill",
       parentId: "entries",
     }] : []),  
   

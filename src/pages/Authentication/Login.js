@@ -1,4 +1,4 @@
-import React, {useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -15,21 +15,16 @@ import {
 } from "reactstrap";
 import { showToast } from "../../slices/toast/reducer";
 import { useNavigate } from "react-router-dom";
-// redux
 import { useSelector, useDispatch } from "react-redux";
 import ParticlesAuth from "./ParticlesAuth";
 import { Link } from "react-router-dom";
-
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { enableLoading, disableLoading } from "../../slices/auth/login/reducer";
-
-
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase"; 
-
+import { db } from "../../firebase";
+import bcrypt from "bcryptjs";
 import logoLight from "../../assets/images/logo-light.png";
-
 import withRouter from "../../Components/Common/withRouter";
 
 const Login = (props) => {
@@ -47,7 +42,7 @@ const Login = (props) => {
 
     if (superAdminUser && superAdminUser.clientId) {
       navigate("/entries");
-    } 
+    }
   }, [navigate]);
 
   const validation = useFormik({
@@ -55,22 +50,21 @@ const Login = (props) => {
 
     initialValues: {
       clientId: "",
-      username: "",
+      password: "",
     },
 
     validationSchema: Yup.object({
       clientId: Yup.string().required("Please Enter Your Client ID"),
-      username: Yup.string().required("Please Enter Your Username"),
+      password: Yup.string().required("Please Enter Your Password"),
     }),
 
-    onSubmit: async (values,{resetForm}) => {
+    onSubmit: async (values, { resetForm }) => {
       dispatch(enableLoading());
 
       try {
         const q = query(
           collection(db, "users"),
           where("clientId", "==", values.clientId),
-          where("username", "==", values.username),
           where("userType", "==", "super_admin")
         );
 
@@ -78,13 +72,28 @@ const Login = (props) => {
 
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
-          localStorage.setItem("superAdminUser", JSON.stringify(userData));
-          props.router.navigate("/entries");
+
+          const isPasswordCorrect = await bcrypt.compare(
+            values.password,
+            userData.password 
+          );
+
+          if (isPasswordCorrect) {
+            localStorage.setItem("superAdminUser", JSON.stringify(userData));
+            props.router.navigate("/entries");
+          } else {
+            dispatch(
+              showToast({
+                type: "error",
+                msg: "Invalid password. Please try again.",
+              })
+            );
+          }
         } else {
           dispatch(
             showToast({
               type: "error",
-              msg: "Invalid login credentials or you are not authorized",
+              msg: "Invalid client ID or not authorized.",
             })
           );
         }
@@ -101,7 +110,6 @@ const Login = (props) => {
       }
     },
   });
-
 
   document.title = process.env.REACT_APP_SITE_TITLE + " | Login";
   return (
@@ -176,29 +184,29 @@ const Login = (props) => {
                         <div className="mb-3">
                           <Label
                             className="form-label"
-                            htmlFor="username"
+                            htmlFor="password"
                           >
-                            Username
+                            Password
                           </Label>
                           <Input
-                            name="username"
-                            value={validation.values.username || ""}
-                            type="text"
+                            name="password"
+                            value={validation.values.password || ""}
+                            type="password"
                             className="form-control"
-                            placeholder="Enter Username"
+                            placeholder="Enter Password"
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             invalid={
-                              validation.touched.username &&
-                                validation.errors.username
+                              validation.touched.password &&
+                                validation.errors.password
                                 ? true
                                 : false
                             }
                           />
-                          {validation.touched.username &&
-                            validation.errors.username ? (
+                          {validation.touched.password &&
+                            validation.errors.password ? (
                             <FormFeedback type="invalid">
-                              {validation.errors.username}
+                              {validation.errors.password}
                             </FormFeedback>
                           ) : null}
                         </div>

@@ -13,6 +13,8 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 const BasicElements = () => {
   const [clientName, setClientName] = useState("");
   const [loading, setLoading] = useState(false);
+  const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+
   const dispatch = useDispatch();
   const validation = useFormik({
     enableReinitialize: true,
@@ -21,8 +23,8 @@ const BasicElements = () => {
       clientName: "",
       myWallet: 0.0,
       trade: 0.0,
-      request: "",
       currentMonth: new Date().toLocaleString("default", { month: "long" }),
+      adminName: superAdminUser?.adminName || "",
     },
     validationSchema: entriesSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -136,17 +138,6 @@ const BasicElements = () => {
                           placeholder="Enter Trade Amount"
                           validation={validation}
                         />
-                        {/* Request */}
-                        <TextInput
-                          label="Request"
-                          name="request"
-                          type="text"
-                          id="request"
-                          placeholder="Enter Request"
-                          validation={validation}
-                        />
-
-                        {/* Submit button */}
                         <div className="modal-footer p-0 d-flex justify-content-start">
                           <Button
                             color="primary"

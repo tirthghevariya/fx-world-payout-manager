@@ -71,22 +71,32 @@ const Entries = () => {
     }
   }, [navigate]);
 
+
   const fetchFormEntries = async () => {
     setFetchingData(true);
     try {
+      const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+      if (!superAdminUser || !superAdminUser.adminName) {
+        console.error("No super admin user found or adminName is missing.");
+        return;
+      }
+
       const querySnapshot = await getDocs(collection(db, "formEntries"));
       const entries = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      setFormEntries(entries);
-      setFilteredEntries(entries);  
+      const filtered = entries.filter(entry => entry.adminName === superAdminUser.adminName);
+
+      setFormEntries(filtered);
+      setFilteredEntries(filtered);
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
       setFetchingData(false);
     }
   };
+
 
   useEffect(() => {
     if (insersUser && insersUser.search) {
@@ -160,7 +170,7 @@ const Entries = () => {
       },
     },
     {
-      name: <span className="font-weight-bold fs-13">Total</span>,
+      name: <span className="font-weight-bold fs-13">5% Charge</span>,
       selector: (row) => {
         const myWallet = parseFloat(row.myWallet) || 0.0;
         const trade = parseFloat(row.trade) || 0.0;
@@ -205,12 +215,16 @@ const Entries = () => {
     {
       name: <span className="font-weight-bold fs-13">Actions</span>,
       cell: (row) => (
-        <button
-          className="btn btn-danger delete-button"
-          onClick={() => openDeleteModal(row.id)}
-        >
-          Delete
-        </button>
+         <a
+            href="#"
+          onClick={(event) => openDeleteModal(row.id)}
+            className="p-2 fs-13 nav-link refresh-button"
+          >
+            <i
+              className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
+              style={{ color: "var(--vz-danger)" }}
+            ></i>
+          </a>
       ),
     },
   ];

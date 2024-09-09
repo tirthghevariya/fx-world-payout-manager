@@ -1,11 +1,5 @@
 /* eslint-disable no-const-assign */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
-//import images
-import logoSm from "../assets/images/logo-sm.png";
-import logoDark from "../assets/images/logo-dark.png";
-import logoLight from "../assets/images/cp-logo.png";
 
 //import Components
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
@@ -89,26 +83,6 @@ const Header = ({  headerClass }) => {
         <div className="layout-width">
           <div className="navbar-header">
             <div className="d-flex">
-              <div className="navbar-brand-box horizontal-logo">
-                <Link to="/" className="logo logo-dark">
-                  <span className="logo-sm">
-                    <img src={logoSm} alt="" height="22" />
-                  </span>
-                  <span className="logo-lg">
-                    <img src={logoDark} alt="" height="17" />
-                  </span>
-                </Link>
-
-                <Link to="/" className="logo logo-light">
-                  <span className="logo-sm">
-                    <img src={logoSm} alt="" height="22" />
-                  </span>
-                  <span className="logo-lg">
-                    <img src={logoLight} alt="" height="17" />
-                  </span>
-                </Link>
-              </div>
-
               <button
                 onClick={toogleMenuBtn}
                 type="button"
@@ -123,12 +97,8 @@ const Header = ({  headerClass }) => {
               </button>
             </div>
 
-            <div className="d-flex align-items-center ">
-              
-           
-              {/* ProfileDropdown */}
+            <div className="d-flex align-items-center ">            
               <ProfileDropdown />
-              {/* Notification Dropdown */}
             </div>
           </div>
         </div>
