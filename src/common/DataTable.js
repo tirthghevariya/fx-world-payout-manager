@@ -27,7 +27,6 @@ const CommonDataTable = (props) => {
 
   const exportToExcel = async () => {
     updateFilterParams({ ...filterParams, isDownload: true });
-
     try {
       await new Promise((resolve) => {
         const interval = setInterval(() => {

@@ -65,11 +65,8 @@ const Navdata = () => {
     isProduct,
     isWallet,
   ]);
- 
-
-
+  
   const menuItems = [
-
     ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
       id: "entries",
       pkey: "Entries",
@@ -102,55 +99,6 @@ const Navdata = () => {
       stateVariables: isForms,
     },
   ];
-
-  // const isAdminOnly = permissions.length === 1 && permissions[0] === "admin";
-
-  // if (isAdminOnly) {
-  //   filteredMenuItems = menuItems;
-  // } else {
-  //   filteredMenuItems = menuItems.filter((item) => {
-  //     const permissionExists = permissions.some(
-  //       (permission) => permission === item.label.toLowerCase()
-  //     );
-  //     return permissionExists;
-  //   });
-
-  //   const additionalItems = [
-  //     {
-  //       id: "forms",
-  //       label: "Forms",
-  //       icon: "ri-file-list-3-line",
-  //       link: "/payout-form",
-  //     },
-  //     {
-  //       id: "tables",
-  //       label: "Tables",
-  //       icon: "ri-layout-grid-line",
-  //       link: "/#",
-  //     },
-  //     {
-  //       id: "apexcharts",
-  //       label: "Bar Graph",
-  //       icon: "ri-pie-chart-line",
-  //       link: "/charts-apex-column",
-  //     },
-  //   ];
-
-  //   filteredMenuItems = [...filteredMenuItems, ...additionalItems];
-  //   menuItems.forEach((parentItem) => {
-  //     if (
-  //       parentItem.subItems &&
-  //       permissions.some((permission) => permission === parentItem.pkey)
-  //     ) {
-  //       filteredMenuItems.push(parentItem);
-  //       filteredMenuItems.push(
-  //         ...parentItem.subItems.filter((subItem) =>
-  //           permissions.some((permission) => permission === subItem.pkey)
-  //         )
-  //       );
-  //     }
-  //   });
-  // }
 
   return <React.Fragment>{menuItems}</React.Fragment>;
 };

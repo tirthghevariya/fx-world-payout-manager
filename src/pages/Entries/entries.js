@@ -229,6 +229,21 @@ const Entries = () => {
     },
   ];
 
+  const generateJSONData = (entries) => {
+    return entries.map((entry) => ({
+      clientId: entry.clientId,
+      clientName: entry.clientName,
+      myWallet: parseFloat(entry.myWallet) || 0.0,
+      trade: parseFloat(entry.trade) || 0.0,
+      charge: ((parseFloat(entry.myWallet) || 0.0) + (parseFloat(entry.trade) || 0.0)) * 0.05,
+      incomeInDollar: ((parseFloat(entry.myWallet) || 0.0) + (parseFloat(entry.trade) || 0.0)) - (((parseFloat(entry.myWallet) || 0.0) + (parseFloat(entry.trade) || 0.0)) * 0.05),
+      incomeInInr: (((parseFloat(entry.myWallet) || 0.0) + (parseFloat(entry.trade) || 0.0)) - (((parseFloat(entry.myWallet) || 0.0) + (parseFloat(entry.trade) || 0.0)) * 0.05)) * 85,
+      status: entry.status
+    }));
+  };
+
+  const jsonData = generateJSONData(formEntries);
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -241,14 +256,14 @@ const Entries = () => {
         <CommonDataTable
           isShowTotal={true}
           columns={columns}
-          data={filteredEntries} 
+          data={jsonData} 
           totalRows={filteredEntries.length}
           loading={fetchingData}
           showAddButton={false}
           checkboxEnabled={false}
           filterParams={filterParams}
           showExportButton={true}
-          exportFileName="userData"
+          exportFileName="payoutEntries"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
           fetchData={fetchFormEntries}

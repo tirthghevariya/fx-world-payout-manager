@@ -10,7 +10,6 @@ import VerticalLayout from "./VerticalLayouts";
 import { Container } from "reactstrap";
 import HorizontalLayout from "./HorizontalLayout";
 
-// eslint-disable-next-line react/prop-types
 const Sidebar = ({ layoutType }) => {
   useEffect(() => {
     const verticalOverlay = document.getElementsByClassName("vertical-overlay");
@@ -46,10 +45,10 @@ const Sidebar = ({ layoutType }) => {
         <div className="navbar-brand-box">
           <Link to="/" className="logo logo-light mt-1">
             <span className="logo-sm">
-              <img src={logoSm} alt="" height="26" className="blend-mode-logo" />
+              <img src={logoSm} alt="" height="26" />
             </span>
             <span className="logo-lg">
-              <img src={logoLight} alt="" height="58" className="blend-mode-logo " />
+              <img src={logoLight} alt="" height="58" />
             </span>
 
           </Link>

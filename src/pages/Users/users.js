@@ -126,7 +126,6 @@ const Users = () => {
     }
   };
 
-
   const columns = [
     {
       name: <span className="font-weight-bold fs-13">Client ID</span>,
@@ -185,9 +184,10 @@ const Users = () => {
           checkboxEnabled={false}
           filterParams={filterParams}
           showExportButton={true}
-          exportFileName="userData"
+          exportFileName="usersData"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
+          fetchData={fetchData}
           form={<AddForm fetchData={fetchData} />} 
         />
       </div>
