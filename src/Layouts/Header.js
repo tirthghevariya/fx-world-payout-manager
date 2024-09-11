@@ -28,12 +28,7 @@ const Header = ({  headerClass }) => {
   // Inside your component
   const sidebarVisibilitytype = useSelector(selectDashboardData);
 
-  const [search, setSearch] = useState(false);
-  const toogleSearch = () => {
-    setSearch(!search);
-  };
-
-  const toogleMenuBtn = () => {
+  const toogleMenuBtn = () => { 
     const windowSize = document.documentElement.clientWidth;
     dispatch(changeSidebarVisibility("show"));
 

@@ -29,6 +29,12 @@ const AddForm = ({ fetchData }) => {
 
   const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
+
+  const formatUsername = (name) => {
+    // Convert the name to lowercase, split it by spaces, and join it with underscores
+    return name.toLowerCase().split(' ').join('_');
+  };
+
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -56,7 +62,7 @@ const AddForm = ({ fetchData }) => {
         const hashedPassword = await hashPassword(values.password);
   
         insersUser.isSuperForm ? await updateDoc(doc(db, 'users', insersUser.userData.id), { 
-          adminName: insersUser?.userData.adminName||"",
+          adminName: formatUsername(insersUser?.userData.username || ""),
           clientId: insersUser?.userData.clientId||"",
           userType:"super_admin"||"admin",
           username: insersUser?.userData.username||"",
@@ -107,7 +113,7 @@ const AddForm = ({ fetchData }) => {
         modalSize={"md"}
         closeModal={() => dispatch(updateState({ formOpen: false, isSuperForm: false }))}
         closeTitle=""
-        modelTitle="Add New Admin"
+        modelTitle="Add New User"
         modalBody={
           <Row>
             <Col lg={12}>

@@ -123,6 +123,8 @@ const Entries = () => {
   };
 
   const handleDeleteEntry = async () => {
+    console.log("selectedEntryId", selectedEntryId)
+
     if (selectedEntryId) {
       try {
         await deleteDoc(doc(db, "formEntries", selectedEntryId));
@@ -231,6 +233,7 @@ const Entries = () => {
 
   const generateJSONData = (entries) => {
     return entries.map((entry) => ({
+      id: entry.id,
       clientId: entry.clientId,
       clientName: entry.clientName,
       myWallet: parseFloat(entry.myWallet) || 0.0,

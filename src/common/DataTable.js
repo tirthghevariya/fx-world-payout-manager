@@ -12,7 +12,7 @@ const CommonDataTable = (props) => {
   const { layoutModeType } = useSelector((state) => ({
     layoutModeType: state.Layout.layoutModeType,
   }));
-
+  
   createTheme("dark", {
     background: {
       default: "transparent",
@@ -26,7 +26,7 @@ const CommonDataTable = (props) => {
   };
 
   const exportToExcel = async () => {
-    updateFilterParams({ ...filterParams, isDownload: true });
+    updateFilterParams({ ...filterParams, isDownload: true });-.000000000000000000000000
     try {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
@@ -62,6 +62,7 @@ const CommonDataTable = (props) => {
     setFilterParams(updatedFilterParams);
     props.fetchData(updatedFilterParams);
   };
+
   const totalMyWallet = props.data.reduce((acc, entry) => acc + parseFloat(entry.myWallet || 0), 0).toFixed(2);
   const totalTrade = props.data.reduce((acc, entry) => acc + parseFloat(entry.trade || 0), 0).toFixed(2);
   const totalSum = (parseFloat(totalMyWallet) + parseFloat(totalTrade)).toFixed(2);
@@ -90,7 +91,7 @@ const CommonDataTable = (props) => {
                   color="primary"
                 >
                 <div>{props.form}</div>
-                  <i className="mdi mdi-plus"></i> Add Admin
+                  <i className="mdi mdi-plus"></i> Add User
                 </Button>  
                         
                  )}               
