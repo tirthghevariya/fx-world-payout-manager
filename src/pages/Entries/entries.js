@@ -59,6 +59,7 @@ const Entries = () => {
   const [selectedEntryId, setSelectedEntryId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [selectedUser, setSelectedUser] = useState({ value: "all", label: "All" });
+  const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -93,7 +94,6 @@ const Entries = () => {
 
   useEffect(() => {
     fetchData();
-    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
     if (superAdminUser && superAdminUser.clientId) {
       fetchFormEntries();
     } else {
@@ -292,15 +292,17 @@ const Entries = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
-      >Select Admin</Label>
-      <Select
-        className="dd-style"
-        options={userOptions}
-        onChange={handleChange}
-        value={selectedUser}
-        placeholder="Select an Admin"
-      />
+      {superAdminUser.userType === "main_admin" ? <div>
+        <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
+        >Select Admin</Label>
+        <Select
+          className="dd-style"
+          options={userOptions}
+          onChange={handleChange}
+          value={selectedUser}
+          placeholder="Select an Admin"
+        />
+      </div> : ""}
 
       <div className="table-container">
         <CommonDataTable

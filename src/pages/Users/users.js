@@ -35,9 +35,9 @@ const Users = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { filterParams, insersUser } = useSelector((state) => state.user);
+  const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
   useEffect(() => {
-    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
     if (superAdminUser && superAdminUser.clientId) {
       fetchData();
@@ -202,15 +202,16 @@ const Users = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
+      {superAdminUser.userType === "main_admin" ? <div> <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
       >Select Admin</Label>
-      <Select
-        className="dd-style"
-        options={userOptions}
-        onChange={handleChange}
-        value={selectedUser}
-        placeholder="Select an Admin"
-      />
+        <Select
+          className="dd-style"
+          options={userOptions}
+          onChange={handleChange}
+          value={selectedUser}
+          placeholder="Select an Admin"
+        /></div> : ""}
+
       <div className="table-container">
         <CommonDataTable
           isShowTotal={false}
