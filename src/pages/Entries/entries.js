@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Container, Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
+import { Container, Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import CommonDataTable from "../../common/DataTable";
 import { db } from "../../firebase";
-import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, deleteDoc, query, where } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
 import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../slices/users/reducer";
+import Select from "react-select";
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
@@ -56,13 +57,42 @@ const Entries = () => {
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntryId, setSelectedEntryId] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [selectedUser, setSelectedUser] = useState({ value: "all", label: "All" });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { filterParams, insersUser } = useSelector((state) => state.user);
 
+  const fetchData = async () => {
+    setFetchingData(true);
+    try {
+      const q = query(collection(db, "users"), where("userType", "==", "super_admin"));
+      const querySnapshot = await getDocs(q);
+      const entries = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setUserData(entries);
+      setFetchingData(false);
+
+    } catch (error) {
+      console.error("Error fetching form entries:", error.message);
+      setFetchingData(false);
+    }
+  };
+
+  const userOptions = [
+    { value: "all", label: "All" },
+    ...(Array.isArray(userData) ? userData.map((user) => ({
+      value: user.adminName,
+      label: user.username,
+    })) : []),
+  ];
+
   useEffect(() => {
+    fetchData();
     const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
     if (superAdminUser && superAdminUser.clientId) {
       fetchFormEntries();
@@ -71,6 +101,9 @@ const Entries = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    fetchFormEntries();
+  }, [selectedUser]);
 
   const fetchFormEntries = async () => {
     setFetchingData(true);
@@ -86,7 +119,10 @@ const Entries = () => {
         ...doc.data(),
         id: doc.id,
       }));
-      const filtered = entries.filter(entry => entry.adminName === superAdminUser.adminName);
+
+      const filtered = superAdminUser.userType === "main_admin"
+        ? (selectedUser?.value === "all" ? entries : entries.filter(entry => entry.adminName === selectedUser?.value))
+        : entries.filter(entry => entry.adminName === superAdminUser.adminName);
 
       setFormEntries(filtered);
       setFilteredEntries(filtered);
@@ -97,18 +133,21 @@ const Entries = () => {
     }
   };
 
+  const handleChange = (selectedOption) => {
+    setSelectedUser(selectedOption); // Update state with selected option
+  };
 
   useEffect(() => {
     if (insersUser && insersUser.search) {
       const searchValue = insersUser.search.toLowerCase();
       const filtered = formEntries.filter((entry) =>
         entry.clientId.toLowerCase().includes(searchValue) ||
-        entry.clientName.toLowerCase().includes(searchValue)||
+        entry.clientName.toLowerCase().includes(searchValue) ||
         entry.currentMonth.toLowerCase().includes(searchValue)
       );
-      setFilteredEntries(filtered);  
+      setFilteredEntries(filtered);
     } else {
-      setFilteredEntries(formEntries); 
+      setFilteredEntries(formEntries);
     }
   }, [insersUser, formEntries]);
 
@@ -123,7 +162,6 @@ const Entries = () => {
   };
 
   const handleDeleteEntry = async () => {
-    console.log("selectedEntryId", selectedEntryId)
 
     if (selectedEntryId) {
       try {
@@ -155,7 +193,7 @@ const Entries = () => {
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
       selector: (row) => row.clientName,
-      width:"20%"
+      width: "20%"
     },
     {
       name: <span className="font-weight-bold fs-13">My Wallet</span>,
@@ -181,7 +219,7 @@ const Entries = () => {
         return `$${calculatedValue}`;
       },
     },
-   
+
     {
       name: <span className="font-weight-bold fs-13">Income In $</span>,
       selector: (row) => {
@@ -217,16 +255,16 @@ const Entries = () => {
     {
       name: <span className="font-weight-bold fs-13">Actions</span>,
       cell: (row) => (
-         <a
-            href="#"
+        <a
+          href="#"
           onClick={(event) => openDeleteModal(row.id)}
-            className="p-2 fs-13 nav-link refresh-button"
-          >
-            <i
-              className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
-              style={{ color: "var(--vz-danger)" }}
-            ></i>
-          </a>
+          className="p-2 fs-13 nav-link refresh-button"
+        >
+          <i
+            className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
+            style={{ color: "var(--vz-danger)" }}
+          ></i>
+        </a>
       ),
     },
   ];
@@ -254,17 +292,28 @@ const Entries = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      
+      <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
+      >Select Admin</Label>
+      <Select
+        className="dd-style"
+        options={userOptions}
+        onChange={handleChange}
+        value={selectedUser}
+        placeholder="Select an Admin"
+      />
+
       <div className="table-container">
         <CommonDataTable
           isShowTotal={true}
           columns={columns}
-          data={jsonData} 
+          data={filteredEntries}
+          exportData={jsonData}
           totalRows={filteredEntries.length}
           loading={fetchingData}
           showAddButton={false}
           checkboxEnabled={false}
           filterParams={filterParams}
+          moduleName="Entries"
           showExportButton={true}
           exportFileName="payoutEntries"
           searchEnable={true}

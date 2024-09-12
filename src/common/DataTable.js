@@ -26,7 +26,7 @@ const CommonDataTable = (props) => {
   };
 
   const exportToExcel = async () => {
-    updateFilterParams({ ...filterParams, isDownload: true });-.000000000000000000000000
+    updateFilterParams({ ...filterParams, isDownload : true });-.000000000000000000000000
     try {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
@@ -37,7 +37,7 @@ const CommonDataTable = (props) => {
         }, 100);
       });
 
-      const ws = XLSX.utils.json_to_sheet(props.data);
+      const ws = XLSX.utils.json_to_sheet(props.exportData);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
@@ -106,16 +106,26 @@ const CommonDataTable = (props) => {
                 <i className="bx bxs-file-export"></i>Export
               </Button>
             )}
+            {props.showExportButton && (
+              <Button
+                className="btn btn-primary add-button-margin"
+                color="primary"
+                type="submit"
+              >
+                {`Total ${props.totalRows} ${props.moduleName}`}
+              </Button>
+            )}
+
           </div>
         </div>
       </div>
-      <div className="table-container" style={{ marginBottom: "50px" }}>
+      <div className="table-container" style={{ marginBottom: "80px" }}>
         <div>
           <DataTable
             theme={layoutModeType === "light" ? "" : "dark"}
             columns={props.columns}
             data={props.data}
-            pagination
+            // pagination
             highlightOnHover
             paginationServer
             selectableRows={props.checkboxEnabled ? props.checkboxEnabled : false}
@@ -163,9 +173,9 @@ const CommonDataTable = (props) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', backgroundColor: '#f1f1f1' }}>
             <div><strong>Total My Wallet: </strong>${totalMyWallet}</div>
             <div><strong>Total Trade: </strong>${totalTrade}</div>
-            <div><strong>Total Income (USD): </strong>${totalIncomeInUSD}</div>
-            <div><strong>Total Sum: </strong>${totalSum}</div>
-            <div><strong>Total Income (INR): </strong>₹{totalIncomeInINR}</div>
+            <div><strong>Total Charge ($): </strong>${totalIncomeInUSD}</div>
+            <div><strong>Total Income ($) </strong>${totalSum}</div>
+              <div><strong>Total Income (₹): </strong>₹{totalIncomeInINR}</div>
           </div>:""
           }
         </div>

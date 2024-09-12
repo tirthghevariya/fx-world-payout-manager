@@ -61,10 +61,11 @@ const Login = (props) => {
       dispatch(enableLoading());
 
       try {
+        // Query to check for both super_admin and main_admin
         const q = query(
           collection(db, "users"),
           where("clientId", "==", values.clientId),
-          where("userType", "==", "super_admin")
+          where("userType", "in", ["super_admin", "main_admin"]) // Check for both user types
         );
 
         const querySnapshot = await getDocs(q);
@@ -74,7 +75,7 @@ const Login = (props) => {
 
           const isPasswordCorrect = await bcrypt.compare(
             values.password,
-            userData.password 
+            userData.password
           );
 
           if (isPasswordCorrect) {
@@ -120,8 +121,7 @@ const Login = (props) => {
               <Col lg={12}>
                 <div className="text-center mt-sm-5 mb-4 text-white-50 mt-3">
                   <div className="mt-3">
-                      <img src={logoLight} alt="" height="60" />
-                    
+                    <img src={logoLight} alt="" height="60" />
                   </div>
                   <p className="mt-3 fs-15">
                     Premium Admin & Dashboard Template paper <br />
@@ -180,10 +180,7 @@ const Login = (props) => {
                         </div>
 
                         <div className="mb-3">
-                          <Label
-                            className="form-label"
-                            htmlFor="password"
-                          >
+                          <Label className="form-label" htmlFor="password">
                             Password
                           </Label>
                           <Input

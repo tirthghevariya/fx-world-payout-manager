@@ -67,7 +67,7 @@ const Navdata = () => {
   ]);
   
   const menuItems = [
-    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
+    ...(superAdminUser && superAdminUser.userType === "super_admin" || "main_admin" ? [{
       id: "entries",
       pkey: "Entries",
       label: "Entries",
@@ -76,7 +76,7 @@ const Navdata = () => {
       parentId: "entries",
     }] : []),  
   
-    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
+    ...(superAdminUser && superAdminUser.userType === "super_admin" || "main_admin" ? [{
       id: "user",
       pkey: "Users",
       label: "Users",
@@ -84,8 +84,8 @@ const Navdata = () => {
       icon: "ri-shield-user-fill",
       parentId: "user",
     }] : []),
+    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
 
-    {
       id: "forms",
       label: "Payout Form",
       icon: "ri-file-list-3-line",
@@ -97,7 +97,8 @@ const Navdata = () => {
         updateIconSidebar(e);
       },
       stateVariables: isForms,
-    },
+    
+      }] : []),
   ];
 
   return <React.Fragment>{menuItems}</React.Fragment>;

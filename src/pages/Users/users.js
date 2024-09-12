@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
+import { Container, Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import CommonDataTable from "../../common/DataTable";
 import { db } from "../../firebase";
-import { collection, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, deleteDoc, query, where } from "firebase/firestore";
 import AddForm from "./addForm";
 import { useNavigate } from "react-router-dom";
 import 'flatpickr/dist/flatpickr.min.css';
 import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../slices/users/reducer";
 import { showToast } from "../../slices/toast/reducer";
+import Select from "react-select";
 
 const DeleteModal = ({ isOpen, toggle, onDelete }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
@@ -28,6 +29,8 @@ const Users = () => {
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntryId, setSelectedEntryId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState({ value: "all", label: "All" });
+  const [userData, setUserData] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,7 +46,6 @@ const Users = () => {
     }
   }, [navigate]);
 
-
   const fetchData = async () => {
     setFetchingData(true);
     try {
@@ -54,16 +56,39 @@ const Users = () => {
           ...doc.data(),
           id: doc.id,
         }))
-        .filter((entry) => entry.adminName === superAdminUser?.adminName); 
 
-      setFormEntries(entries);
-      setFilteredEntries(entries);
+      const q = query(collection(db, "users"), where("userType", "==", "super_admin"));
+      const userData = await getDocs(q);
+      const userEntries = userData.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      const filtered = superAdminUser.userType === "main_admin"
+        ? (selectedUser?.value === "all" ? entries : entries.filter(entry => entry.adminName === selectedUser?.value))
+        : entries.filter(entry => entry.adminName === superAdminUser.adminName);
+      setUserData(userEntries);
+      setFormEntries(filtered);
+      setFilteredEntries(filtered);
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
       setFetchingData(false);
     }
   };
+
+  const userOptions = [
+    { value: "all", label: "All" },
+    ...(Array.isArray(userData) ? userData.map((user) => ({
+      value: user.adminName,
+      label: user.username,
+    })) : []),
+  ];
+
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedUser]);
 
 
   useEffect(() => {
@@ -74,7 +99,7 @@ const Users = () => {
       );
       setFilteredEntries(filtered);
     } else {
-      setFilteredEntries(formEntries); 
+      setFilteredEntries(formEntries);
     }
   }, [insersUser.search, formEntries]);
 
@@ -88,7 +113,12 @@ const Users = () => {
     setSelectedEntryId(null);
   };
 
-  const handleStatusChange = async (event, id,row) => {
+  const handleChange = (selectedOption) => {
+    setSelectedUser(selectedOption); // Update state with selected option
+  };
+
+
+  const handleStatusChange = async (event, id, row) => {
     const newStatus = event.target.value;
     if (newStatus === "super_admin") {
       dispatch(updateState({ formOpen: true, isSuperForm: true, userData: row }));
@@ -113,8 +143,8 @@ const Users = () => {
             type: "error",
             msg: "Super admin cannot be delete",
           })
-        );    
-        return; 
+        );
+        return;
       }
       try {
         await deleteDoc(doc(db, "users", selectedEntryId.id));
@@ -151,16 +181,16 @@ const Users = () => {
     {
       name: <span className="font-weight-bold fs-13">Actions</span>,
       cell: (row) => (
-         <a
-            href="#"
-          onClick={(event) =>  openDeleteModal(row)}
-            className="p-2 fs-13 nav-link refresh-button"
-          >
-            <i
-              className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
-              style={{ color: "var(--vz-danger)" }}
-            ></i>
-          </a>
+        <a
+          href="#"
+          onClick={(event) => openDeleteModal(row)}
+          className="p-2 fs-13 nav-link refresh-button"
+        >
+          <i
+            className="ri-delete-bin-7-fill fs-13 p-2 bg-soft-danger text-red rounded-circle align-middle"
+            style={{ color: "var(--vz-danger)" }}
+          ></i>
+        </a>
       ),
     },
   ];
@@ -172,23 +202,33 @@ const Users = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      
+      <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
+      >Select Admin</Label>
+      <Select
+        className="dd-style"
+        options={userOptions}
+        onChange={handleChange}
+        value={selectedUser}
+        placeholder="Select an Admin"
+      />
       <div className="table-container">
         <CommonDataTable
           isShowTotal={false}
           columns={columns}
           data={filteredEntries}
+          exportData={filteredEntries}
           totalRows={filteredEntries.length}
           loading={fetchingData}
           showAddButton={true}
           checkboxEnabled={false}
           filterParams={filterParams}
           showExportButton={true}
+          moduleName="User"
           exportFileName="usersData"
           searchEnable={true}
           updateStates={() => dispatch(updateState({ formOpen: true }))}
           fetchData={fetchData}
-          form={<AddForm fetchData={fetchData} />} 
+          form={<AddForm fetchData={fetchData} />}
         />
       </div>
       <DeleteModal

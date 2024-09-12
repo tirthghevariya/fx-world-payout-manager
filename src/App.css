@@ -380,3 +380,9 @@ table td {
   padding: 4px;
   background-color: #FF917D;
 }
+
+.dd-style {
+  width: 29%;
+    margin-left: 10px;
+    margin-bottom: 2%;
+}

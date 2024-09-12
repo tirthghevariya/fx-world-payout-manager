@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UiContent from "../../Components/Common/UiContent";
 import { useFormik } from "formik";
 import { entriesSchema } from "../../Components/validations";
@@ -9,11 +9,21 @@ import { showToast } from "../../slices/toast/reducer";
 import { useDispatch } from "react-redux";
 import { db } from "../../firebase";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const BasicElements = () => {
   const [clientName, setClientName] = useState("");
   const [loading, setLoading] = useState(false);
   const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
+    if (superAdminUser && superAdminUser?.userType === "main_admin") {
+      navigate("/entries");
+    } 
+  }, [navigate]);
 
   const dispatch = useDispatch();
   const validation = useFormik({
