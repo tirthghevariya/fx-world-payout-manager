@@ -10,7 +10,7 @@ const Footer = () => {
             <Col sm={6}>{new Date().getFullYear()} © fx world payout manager.</Col>
             <Col sm={6}>
               <div className="text-sm-end d-none d-sm-block">
-                Design & Develop by Darshan Chataniyaswami
+                Design & Develop by Darshan Chaitanyswami And Team
               </div>
             </Col>
           </Row>

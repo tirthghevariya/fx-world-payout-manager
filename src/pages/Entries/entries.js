@@ -52,6 +52,14 @@ const StatusDropdown = ({ value, onChange }) => {
 };
 
 const Entries = () => {
+  const getCurrentMonth = () => {
+    const currentDate = new Date();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return monthNames[currentDate.getMonth()];
+  };
   const [fetchingData, setFetchingData] = useState(false);
   const [formEntries, setFormEntries] = useState([]);
   const [filteredEntries, setFilteredEntries] = useState([]);
@@ -59,6 +67,8 @@ const Entries = () => {
   const [selectedEntryId, setSelectedEntryId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [selectedUser, setSelectedUser] = useState({ value: "all", label: "All" });
+  const currentMonth = getCurrentMonth();
+  const [selectedMonth, setSelectedMonth] = useState({ value: currentMonth.toLowerCase(), label: currentMonth });
   const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
 
   const dispatch = useDispatch();
@@ -92,6 +102,23 @@ const Entries = () => {
     })) : []),
   ];
 
+  const monthOptions = [
+    { value: "all", label: "All Months" },
+    { value: "january", label: "January" },
+    { value: "february", label: "February" },
+    { value: "march", label: "March" },
+    { value: "april", label: "April" },
+    { value: "may", label: "May" },
+    { value: "june", label: "June" },
+    { value: "july", label: "July" },
+    { value: "august", label: "August" },
+    { value: "september", label: "September" },
+    { value: "october", label: "October" },
+    { value: "november", label: "November" },
+    { value: "december", label: "December" },
+  ];
+
+
   useEffect(() => {
     fetchData();
     if (superAdminUser && superAdminUser?.clientId) {
@@ -103,7 +130,7 @@ const Entries = () => {
 
   useEffect(() => {
     fetchFormEntries();
-  }, [selectedUser]);
+  }, [selectedUser, selectedMonth]);
 
   const fetchFormEntries = async () => {
     setFetchingData(true);
@@ -124,8 +151,13 @@ const Entries = () => {
         ? (selectedUser?.value === "all" ? entries : entries.filter(entry => entry.adminName === selectedUser?.value))
         : entries.filter(entry => entry.adminName === superAdminUser?.adminName);
 
-      setFormEntries(filtered);
-      setFilteredEntries(filtered);
+      // Filter based on the selected month
+      const monthFiltered = selectedMonth?.value === "all"
+        ? filtered
+        : filtered.filter(entry => entry.currentMonth === selectedMonth?.label); // assuming `currentMonth` matches the `label`
+
+      setFormEntries(monthFiltered);
+      setFilteredEntries(monthFiltered);
     } catch (error) {
       console.error("Error fetching form entries:", error.message);
     } finally {
@@ -134,7 +166,11 @@ const Entries = () => {
   };
 
   const handleChange = (selectedOption) => {
-    setSelectedUser(selectedOption); // Update state with selected option
+    setSelectedUser(selectedOption);
+  };
+
+  const handleMonthChange = (selectedOption) => {
+    setSelectedMonth(selectedOption);
   };
 
   useEffect(() => {
@@ -292,17 +328,31 @@ const Entries = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      {superAdminUser?.userType === "main_admin" ? <div>
-        <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
-        >Select Admin</Label>
-        <Select
-          className="dd-style"
-          options={userOptions}
-          onChange={handleChange}
-          value={selectedUser}
-          placeholder="Select an Admin"
-        />
-      </div> : ""}
+      <div style={{ display: "flex", alignItems: "center", marginLeft: "10px", marginBottom: "10px" }}>
+        <div style={{ marginRight: "10px", width: "21%" }}>
+          <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}>Select Month</Label>
+          <Select
+            className="dd-style"
+            options={monthOptions}
+            onChange={handleMonthChange}
+            value={selectedMonth}
+            placeholder="Select a Month"
+          />
+        </div>
+
+        {superAdminUser?.userType === "main_admin" && (
+          <div style={{ marginRight: "10px", width: "21%" }}>
+            <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}>Select User</Label>
+            <Select
+              className="dd-style"
+              options={userOptions}
+              onChange={handleChange}
+              value={selectedUser}
+              placeholder="Select Other"
+            />
+          </div>
+        )}
+      </div>
 
       <div className="table-container">
         <CommonDataTable

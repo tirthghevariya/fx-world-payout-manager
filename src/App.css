@@ -5,17 +5,20 @@
 .permission-container input[type="checkbox"] {
   margin-right: 8px;
 }
+
 .permission-container {
   column-count: 3;
   column-gap: 15px;
 }
-.permission-container > div {
+
+.permission-container>div {
   margin: 0;
   display: grid;
   grid-template-rows: 1fr auto;
   margin-bottom: 10px;
   break-inside: avoid;
 }
+
 .permission-container .card {
   margin-bottom: 0.4rem;
 }
@@ -36,6 +39,7 @@
 .bg-soft-primary {
   background-color: #e2e5ee !important;
 }
+
 .bg-soft-danger {
   background-color: #f065482e !important;
 }
@@ -75,10 +79,12 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
+
 .table-container {
   margin-left: 5px;
   margin-right: 5px;
@@ -88,25 +94,30 @@
   min-height: 35px !important;
 }
 
-.rdt_TableHead > div {
+.rdt_TableHead>div {
   min-height: 40px;
   background: #e2e5ee;
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
-html[data-layout-mode="dark"] .rdt_TableHead > div {
+
+html[data-layout-mode="dark"] .rdt_TableHead>div {
   background-color: transparent;
 }
+
 /* tables space */
-.rdt_TableHeadRow > div {
+.rdt_TableHeadRow>div {
   padding: 0px 10px;
 }
-.rdt_TableBody > div > div {
+
+.rdt_TableBody>div>div {
   padding: 0px 10px;
 }
+
 .button-margin {
   margin-left: 4px;
   margin-right: 6px;
 }
+
 .add-button-margin {
   margin-right: 10px;
 }
@@ -125,9 +136,8 @@ html[data-layout-mode="dark"] .rdt_TableHead > div {
   margin-left: -5px;
   margin-bottom: 10px;
 }
-.navbar-menu
-  .navbar-nav
-  .nav-link[data-bs-toggle="collapse"][aria-expanded="true"]:after {
+
+.navbar-menu .navbar-nav .nav-link[data-bs-toggle="collapse"][aria-expanded="true"]:after {
   transform: rotate(0deg);
 }
 
@@ -183,6 +193,7 @@ table td {
   font-size: 1rem;
   line-height: 1.5rem;
 }
+
 .font-semibold {
   font-weight: 600;
 }
@@ -204,12 +215,15 @@ table td {
   margin-left: -14px;
   margin-right: 80px;
 }
+
 .margin-input {
   margin-left: 10px;
 }
+
 .range-button {
   margin-right: 80px;
 }
+
 .row-margin {
   margin-left: 9px;
 }
@@ -233,6 +247,7 @@ table td {
   top: -6px;
   right: -6px;
 }
+
 .custom-tabs .nav-link {
   padding: 0.3rem 1rem;
   color: #000000;
@@ -345,6 +360,7 @@ table td {
   visibility: hidden;
   cursor: pointer;
 }
+
 .edit-icon.user-edit-icon {
   position: absolute;
   top: 5px;
@@ -382,7 +398,7 @@ table td {
 }
 
 .dd-style {
-  width: 29%;
-    margin-left: 10px;
-    margin-bottom: 2%;
+  width: 100%;
+  /* Make full width of parent div */
+  margin-bottom: 2%;
 }
