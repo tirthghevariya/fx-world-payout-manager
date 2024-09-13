@@ -10,36 +10,10 @@ const Navdata = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [isPages, setIsPages] = useState(false);
   const [isForms, setIsForms] = useState(false);
-  const [isTables, setIsTables] = useState(false);
-  const [isCharts, setIsCharts] = useState(false);
-  const [isProduct, setisProduct] = useState(false);
-  const [isWallet, setIsWallet] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
-  // const permissions = authUser.permissions.map((permission) =>
-  //   permission.toUpperCase()
-  // );
-  //
-  // console.log("permissions", permissions);
-
-  function updateIconSidebar(e) {
-    if (e && e.target && e.target.getAttribute("subitems")) {
-      const ul = document.getElementById("two-column-menu");
-      const iconItems = ul.querySelectorAll(".nav-icon.active");
-      let activeIconItems = [...iconItems];
-      activeIconItems.forEach((item) => {
-        item.classList.remove("active");
-        const id = item.getAttribute("subitems");
-        if (document.getElementById(id))
-          document.getElementById(id).classList.remove("show");
-      });
-    }
-  }
 
   useEffect(() => {
     document.body.classList.remove("twocolumn-panel");
-    if (iscurrentState !== "Dashboard") {
-      setIsDashboard(false);
-    }
     if (iscurrentState !== "Auth") {
       setIsAuth(false);
     }
@@ -60,23 +34,19 @@ const Navdata = () => {
     isAuth,
     isPages,
     isForms,
-    isTables,
-    isCharts,
-    isProduct,
-    isWallet,
   ]);
-  
+
   const menuItems = [
-    ...(superAdminUser && superAdminUser.userType === "super_admin" || "main_admin" ? [{
+    ...(superAdminUser && superAdminUser?.clientId ? [{
       id: "entries",
       pkey: "Entries",
       label: "Entries",
       link: "/entries",
       icon: " ri-file-list-fill",
       parentId: "entries",
-    }] : []),  
-  
-    ...(superAdminUser && superAdminUser.userType === "super_admin" || "main_admin" ? [{
+    }] : []),
+
+    ...(superAdminUser && superAdminUser?.clientId ? [{
       id: "user",
       pkey: "Users",
       label: "Users",
@@ -84,21 +54,15 @@ const Navdata = () => {
       icon: "ri-shield-user-fill",
       parentId: "user",
     }] : []),
-    ...(superAdminUser && superAdminUser.userType === "super_admin" ? [{
+    ...(superAdminUser && superAdminUser?.userType === "super_admin" || superAdminUser?.userType === undefined ? [{
 
       id: "forms",
       label: "Payout Form",
       icon: "ri-file-list-3-line",
       link: "/payout-form",
-      click: function (e) {
-        e.preventDefault();
-        setIsForms(!isForms);
-        setIscurrentState("Forms");
-        updateIconSidebar(e);
-      },
       stateVariables: isForms,
-    
-      }] : []),
+
+    }] : []),
   ];
 
   return <React.Fragment>{menuItems}</React.Fragment>;

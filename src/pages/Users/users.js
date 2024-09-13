@@ -39,7 +39,7 @@ const Users = () => {
 
   useEffect(() => {
 
-    if (superAdminUser && superAdminUser.clientId) {
+    if (superAdminUser && superAdminUser?.clientId) {
       fetchData();
     } else {
       navigate("/payout-form");
@@ -64,9 +64,9 @@ const Users = () => {
         id: doc.id,
       }));
 
-      const filtered = superAdminUser.userType === "main_admin"
+      const filtered = superAdminUser?.userType === "main_admin"
         ? (selectedUser?.value === "all" ? entries : entries.filter(entry => entry.adminName === selectedUser?.value))
-        : entries.filter(entry => entry.adminName === superAdminUser.adminName);
+        : entries.filter(entry => entry.adminName === superAdminUser?.adminName);
       setUserData(userEntries);
       setFormEntries(filtered);
       setFilteredEntries(filtered);
@@ -114,9 +114,8 @@ const Users = () => {
   };
 
   const handleChange = (selectedOption) => {
-    setSelectedUser(selectedOption); // Update state with selected option
+    setSelectedUser(selectedOption);
   };
-
 
   const handleStatusChange = async (event, id, row) => {
     const newStatus = event.target.value;
@@ -135,7 +134,7 @@ const Users = () => {
 
   const handleDeleteEntry = async () => {
     if (selectedEntryId) {
-      if (selectedEntryId.userType === 'super_admin') {
+      if (selectedEntryId?.userType === 'super_admin') {
         console.log('This user cannot be deleted.');
         closeDeleteModal();
         dispatch(
@@ -147,7 +146,7 @@ const Users = () => {
         return;
       }
       try {
-        await deleteDoc(doc(db, "users", selectedEntryId.id));
+        await deleteDoc(doc(db, "users", selectedEntryId?.id));
         fetchData();
         closeDeleteModal();
       } catch (error) {
@@ -169,7 +168,7 @@ const Users = () => {
       name: <span className="font-weight-bold fs-13">Type</span>,
       cell: (row) => (
         <select
-          value={row.userType}
+          value={row?.userType}
           onChange={(e) => handleStatusChange(e, row.id, row)}
           className="status-dropdown"
         >
@@ -202,7 +201,7 @@ const Users = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      {superAdminUser.userType === "main_admin" ? <div> <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
+      {superAdminUser?.userType === "main_admin" ? <div> <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
       >Select Admin</Label>
         <Select
           className="dd-style"

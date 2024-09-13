@@ -116,6 +116,7 @@ const Layout = (props) => {
   });
 
   function scrollNavigation() {
+
     const scrollup = document.documentElement.scrollTop;
     if (scrollup > 50) {
       setHeaderClass("topbar-shadow");

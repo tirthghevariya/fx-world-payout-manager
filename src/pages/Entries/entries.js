@@ -94,7 +94,7 @@ const Entries = () => {
 
   useEffect(() => {
     fetchData();
-    if (superAdminUser && superAdminUser.clientId) {
+    if (superAdminUser && superAdminUser?.clientId) {
       fetchFormEntries();
     } else {
       navigate("/payout-form");
@@ -109,7 +109,7 @@ const Entries = () => {
     setFetchingData(true);
     try {
       const superAdminUser = JSON.parse(localStorage.getItem("superAdminUser"));
-      if (!superAdminUser || !superAdminUser.adminName) {
+      if (!superAdminUser || !superAdminUser?.adminName) {
         console.error("No super admin user found or adminName is missing.");
         return;
       }
@@ -120,9 +120,9 @@ const Entries = () => {
         id: doc.id,
       }));
 
-      const filtered = superAdminUser.userType === "main_admin"
+      const filtered = superAdminUser?.userType === "main_admin"
         ? (selectedUser?.value === "all" ? entries : entries.filter(entry => entry.adminName === selectedUser?.value))
-        : entries.filter(entry => entry.adminName === superAdminUser.adminName);
+        : entries.filter(entry => entry.adminName === superAdminUser?.adminName);
 
       setFormEntries(filtered);
       setFilteredEntries(filtered);
@@ -292,7 +292,7 @@ const Entries = () => {
           <BreadCrumb title="Form Entries" pageTitle="Entries" />
         </Container>
       </div>
-      {superAdminUser.userType === "main_admin" ? <div>
+      {superAdminUser?.userType === "main_admin" ? <div>
         <Label style={{ textAlign: "left", display: "block", marginLeft: "10px" }}
         >Select Admin</Label>
         <Select

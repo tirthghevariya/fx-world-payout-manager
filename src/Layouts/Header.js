@@ -1,5 +1,5 @@
 /* eslint-disable no-const-assign */
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 //import Components
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
@@ -10,7 +10,7 @@ import { createSelector } from "reselect";
 
 
 // eslint-disable-next-line react/prop-types
-const Header = ({  headerClass }) => {
+const Header = ({ headerClass }) => {
   const dispatch = useDispatch();
 
   const selectDashboardData = createSelector(
@@ -18,17 +18,10 @@ const Header = ({  headerClass }) => {
     (sidebarVisibilitytype) => sidebarVisibilitytype
   );
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
-  };
-
   // Inside your component
   const sidebarVisibilitytype = useSelector(selectDashboardData);
 
-  const toogleMenuBtn = () => { 
+  const toogleMenuBtn = () => {
     const windowSize = document.documentElement.clientWidth;
     dispatch(changeSidebarVisibility("show"));
 
@@ -92,7 +85,7 @@ const Header = ({  headerClass }) => {
               </button>
             </div>
 
-            <div className="d-flex align-items-center ">            
+            <div className="d-flex align-items-center ">
               <ProfileDropdown />
             </div>
           </div>
