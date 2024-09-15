@@ -53,7 +53,7 @@ const BasicElements = () => {
       clientName: "",
       myWallet: "",
       trade: "",
-      currentMonth: "October",
+      currentMonth: new Date().toLocaleString("default", { month: "long" }),
       adminName: superAdminUser?.adminName || "",
     },
     validationSchema: entriesSchema,
@@ -273,10 +273,12 @@ const BasicElements = () => {
                           onChange={handleChange}
                           value={walletOptions.find(option => option.value === selectedOption)}
                           placeholder="Select Wallet type"
+                          isSearchable={false}
+
                         />
                         {selectedOption === "myWallet" && (
                           <TextInput
-                            label="Wallet Type"
+                            label="Commission Wallet"
                             type="text"
                             name="myWallet"
                             id="myWallet"
@@ -286,7 +288,7 @@ const BasicElements = () => {
                         )}
                         {selectedOption === "trade" && (
                           <TextInput
-                            label="Trade Wallet"
+                            label="Trade Profit Wallet"
                             type="text"
                             name="trade"
                             id="trade"

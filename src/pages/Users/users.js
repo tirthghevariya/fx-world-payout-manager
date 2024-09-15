@@ -210,6 +210,7 @@ const Users = () => {
           onChange={handleChange}
           value={selectedUser}
           placeholder="Select an Admin"
+          isSearchable={false}
         /></div> : ""}
 
       <div className="table-container">

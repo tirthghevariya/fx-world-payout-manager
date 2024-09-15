@@ -337,6 +337,7 @@ const Entries = () => {
             onChange={handleMonthChange}
             value={selectedMonth}
             placeholder="Select a Month"
+            isSearchable={false}
           />
         </div>
 
@@ -349,6 +350,7 @@ const Entries = () => {
               onChange={handleChange}
               value={selectedUser}
               placeholder="Select Other"
+              isSearchable={false}
             />
           </div>
         )}
