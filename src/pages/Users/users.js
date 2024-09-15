@@ -163,6 +163,7 @@ const Users = () => {
     {
       name: <span className="font-weight-bold fs-13">Client Name</span>,
       selector: (row) => row.username,
+      width: "20%"
     },
     {
       name: <span className="font-weight-bold fs-13">Type</span>,

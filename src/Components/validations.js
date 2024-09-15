@@ -12,12 +12,10 @@ export const entriesSchema = Yup.object({
     .required("Client Name is required"), // This will be auto-filled but still required for submission
 
   myWallet: Yup.number()
-    .min(0, "Wallet value must be greater than or equal to 0")
-    .required("Wallet value is required"), // Allow user to enter, or default to 0.0
+    .min(0, "Wallet value must be greater than or equal to 0"),
 
   trade: Yup.number()
-    .min(0, "Trade value must be greater than or equal to 0")
-    .required("Trade value is required"), // Allow user to enter, or default to 0.0
+    .min(0, "Trade value must be greater than or equal to 0"),
 
   // The following fields are hidden, so no need to validate:
   status: Yup.string(),

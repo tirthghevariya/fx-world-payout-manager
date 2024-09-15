@@ -402,3 +402,7 @@ table td {
   /* Make full width of parent div */
   margin-bottom: 2%;
 }
+
+.table-margin {
+  margin-top: 10%
+}
