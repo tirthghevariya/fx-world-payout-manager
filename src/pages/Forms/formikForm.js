@@ -278,7 +278,7 @@ const BasicElements = () => {
                         />
                         {selectedOption === "myWallet" && (
                           <TextInput
-                            label="Commission Wallet"
+                            label="Commission Wallet (USDT)"
                             type="text"
                             name="myWallet"
                             id="myWallet"
@@ -288,7 +288,7 @@ const BasicElements = () => {
                         )}
                         {selectedOption === "trade" && (
                           <TextInput
-                            label="Trade Profit Wallet"
+                            label="Trade Profit Wallet (USDT)"
                             type="text"
                             name="trade"
                             id="trade"
