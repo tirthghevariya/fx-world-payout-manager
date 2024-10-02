@@ -174,6 +174,10 @@ const Entries = () => {
   };
 
   useEffect(() => {
+    dispatch(updateState({ search: "" }));
+  }, [dispatch]);
+
+  useEffect(() => {
     if (insersUser && insersUser.search) {
       const searchValue = insersUser.search.toLowerCase();
       const filtered = formEntries.filter((entry) =>

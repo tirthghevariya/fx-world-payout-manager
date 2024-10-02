@@ -6,21 +6,17 @@ import {
   updateUserStatus,
   bulkDeleteUser,
 } from "./thunk";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 const moment = require("moment");
 
 export const initialState = {
   filterParams: {
-    currentPage: 1,
-    perPage: 20,
-    isDownload: false,
   },
 
   insersUser: {
     formOpen: false,
     loading: false,
-    isSuperForm:false,
-    userData:{}
+    isSuperForm: false,
+    userData: {}
   },
 
   updateUser: {

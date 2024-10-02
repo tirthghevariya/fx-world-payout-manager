@@ -46,6 +46,10 @@ const Users = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    dispatch(updateState({ search: "" }));
+  }, [dispatch]);
+
   const fetchData = async () => {
     setFetchingData(true);
     try {

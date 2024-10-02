@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SearchField from "./DataTableSearch";
 import DataTable, { createTheme } from "react-data-table-component";
 import { toSnake } from "./ReqResConvertCase";
-import { useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import * as XLSX from "xlsx";
 import { Button } from "reactstrap";
 import TableSkeleton from "./Skeleton";
@@ -12,7 +12,7 @@ const CommonDataTable = (props) => {
   const { layoutModeType } = useSelector((state) => ({
     layoutModeType: state.Layout.layoutModeType,
   }));
-  
+
   createTheme("dark", {
     background: {
       default: "transparent",
@@ -26,7 +26,7 @@ const CommonDataTable = (props) => {
   };
 
   const exportToExcel = async () => {
-    updateFilterParams({ ...filterParams, isDownload : true });-.000000000000000000000000
+    updateFilterParams({ ...filterParams, isDownload: true }); -.000000000000000000000000
     try {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
@@ -85,17 +85,17 @@ const CommonDataTable = (props) => {
           </div>
           <div>
             {props.showAddButton && (
-                <Button
+              <Button
                 className="add-button-margin"
-                  onClick={props.updateStates}
-                  color="primary"
-                >
+                onClick={props.updateStates}
+                color="primary"
+              >
                 <div>{props.form}</div>
-                  <i className="mdi mdi-plus"></i> Add User
-                </Button>  
-                        
-                 )}               
-            
+                <i className="mdi mdi-plus"></i> Add User
+              </Button>
+
+            )}
+
             {props.showExportButton && (
               <Button
                 className="btn btn-primary add-button-margin"
@@ -145,7 +145,7 @@ const CommonDataTable = (props) => {
                 props.bulkSelected(selectedRows);
               }
             }}
-            
+
             onSort={(sortingColumns, order) => {
               const orderBy = sortingColumns.selector
                 .toString()
@@ -169,14 +169,14 @@ const CommonDataTable = (props) => {
               props.fetchData(updatedFilterParams);
             }}
           />
-          { props.isShowTotal?
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', backgroundColor: '#f1f1f1' }}>
-            <div><strong>Total My Wallet: </strong>${totalMyWallet}</div>
-            <div><strong>Total Trade: </strong>${totalTrade}</div>
-            <div><strong>Total Charge ($): </strong>${totalIncomeInUSD}</div>
-            <div><strong>Total Income ($) </strong>${totalSum}</div>
+          {props.isShowTotal ?
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', backgroundColor: '#f1f1f1' }}>
+              <div><strong>Total My Wallet: </strong>${totalMyWallet}</div>
+              <div><strong>Total Trade: </strong>${totalTrade}</div>
+              <div><strong>Total Charge ($): </strong>${totalIncomeInUSD}</div>
+              <div><strong>Total Income ($) </strong>${totalSum}</div>
               <div><strong>Total Income (₹): </strong>₹{totalIncomeInINR}</div>
-          </div>:""
+            </div> : ""
           }
         </div>
 

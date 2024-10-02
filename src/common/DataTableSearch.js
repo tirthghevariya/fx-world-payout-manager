@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 const SearchField = (props) => {
   const [filterParams, setFilterParams] = useState(props.filterParams || {});
 
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   return (
     <div className="search-max-width mb-4">
